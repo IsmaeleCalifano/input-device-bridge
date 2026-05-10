@@ -10,6 +10,7 @@ public class RilascioCommand implements IAzioneCommand {
     @Override
     public void esegui() {
         log.info(">> Eseguo azione RILASCIO. <<");
+        IniettoreAzione.getInstance().rilasciaClickSinistro();
     }
 
     @Override

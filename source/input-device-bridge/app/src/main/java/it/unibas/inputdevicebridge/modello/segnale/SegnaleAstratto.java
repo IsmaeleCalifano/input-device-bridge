@@ -15,12 +15,12 @@ public abstract class SegnaleAstratto implements ISegnale {
     }
     
     @Override
-    public Boolean getAttivo() {
+    public Float getIntensita() {
         return null;
     }
     
     @Override
-    public void setAttivo(Boolean attivo){}
+    public void setIntensita(Float intensita){}
 
     @Override
     public Punto getPunto() {

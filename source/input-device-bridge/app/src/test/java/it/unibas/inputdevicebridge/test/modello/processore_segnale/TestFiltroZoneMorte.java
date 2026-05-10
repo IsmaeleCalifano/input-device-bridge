@@ -16,7 +16,7 @@ public class TestFiltroZoneMorte {
     
     @BeforeEach
     public void setUp() {
-        this.filtroZoneMorte = new FiltroZoneMorte();
+        this.filtroZoneMorte = new FiltroZoneMorte(3.0f);
     }
     
     @Test

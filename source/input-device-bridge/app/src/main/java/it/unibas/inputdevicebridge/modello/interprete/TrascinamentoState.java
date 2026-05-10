@@ -11,25 +11,29 @@ public class TrascinamentoState implements IInterpreteState {
     
     private Punto ultimoPunto;
     private long timeStampSegnaleStabile;
+    private MovimentoState movimentoState;
 
     public TrascinamentoState(long timeStampSegnaleStabile) {
         this.timeStampSegnaleStabile = timeStampSegnaleStabile;
+        this.movimentoState = new MovimentoState();
     }
 
     @Override
     public EsitoInterpretazione interpreta(ISegnale segnale) {
-        if (segnale.getAttivo() != null) {
-            //TODO: Implementa logica per segnale discreto
-            log.warn("TODO: Implementa logica per segnale discreto");
-            return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
+        if (segnale.getIntensita() != null) {
+            EsitoInterpretazione esitoInterpretazioneMovimento = movimentoState.interpreta(segnale);
+            if (esitoInterpretazioneMovimento.getTipologiaEvento() == ETipologiaEventoSistema.FERMA_MOVIMENTO) {
+               return this.esitoInterpretazioneSegnale(segnale);
+            }
+            return esitoInterpretazioneMovimento;
         }
         if (segnale.getPunto() != null) {
             if (this.ultimoPunto != null) {
                 double distanzaEuclidea = segnale.getPunto().calcolaDistanzaEuclidea(this.ultimoPunto);
                 if (distanzaEuclidea <= Costanti.SOGLIA_SEGNALE_STABILE) {
-                    long durataSegnale = segnale.getTimeStamp() - this.timeStampSegnaleStabile;
-                    if (durataSegnale >= Costanti.DURATA_2_SECONDI) {
-                        return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);
+                    EsitoInterpretazione esitoInterpretazione = this.esitoInterpretazioneSegnale(segnale);
+                    if (esitoInterpretazione.getTipologiaEvento() == ETipologiaEventoSistema.RILASCIO) {
+                        return esitoInterpretazione;
                     }
                 } else {
                     this.timeStampSegnaleStabile = segnale.getTimeStamp();
@@ -37,6 +41,14 @@ public class TrascinamentoState implements IInterpreteState {
 
             }
             this.ultimoPunto = segnale.getPunto();
+        }
+        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
+    }
+    
+    private EsitoInterpretazione esitoInterpretazioneSegnale(ISegnale segnale) {
+        long durataSegnale = segnale.getTimeStamp() - this.timeStampSegnaleStabile;
+        if (durataSegnale >= Costanti.DURATA_2_SECONDI) {
+            return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);
         }
         return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
     }

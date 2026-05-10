@@ -10,13 +10,20 @@ import lombok.extern.slf4j.Slf4j;
 public class AttesaState implements IInterpreteState {
     
     private Punto ultimoPunto;
+    private MovimentoState movimentoState;
+
+    public AttesaState() {
+        this.movimentoState = new MovimentoState();
+    }
 
     @Override
     public EsitoInterpretazione interpreta(ISegnale segnale) {
-        if (segnale.getAttivo() != null) {
-            //TODO: Implementa logica per segnale discreto
-            log.warn("TODO: Implementa logica per segnale discreto");
-            return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
+        if (segnale.getIntensita()!= null) {
+            EsitoInterpretazione esitoInterpretazioneMovimento = movimentoState.interpreta(segnale);
+            if (esitoInterpretazioneMovimento.getTipologiaEvento() == ETipologiaEventoSistema.FERMA_MOVIMENTO) {
+                return new EsitoInterpretazione(new AcquisizioneState(segnale.getTimeStamp()), ETipologiaEventoSistema.NESSUN_EVENTO);
+            }
+            return esitoInterpretazioneMovimento;
         }
         if (segnale.getPunto() != null) {
             if (this.ultimoPunto != null) {

@@ -10,11 +10,13 @@ public class ClickCommand implements IAzioneCommand {
     @Override
     public void esegui() {
         log.info(">> Eseguo azione CLICK. <<");
+        IniettoreAzione.getInstance().premiClickSinistro();
+        IniettoreAzione.getInstance().rilasciaClickSinistro();
     }
 
     @Override
     public IInterpreteState getStatoSuccessivo() {
         return new AttesaState();
     }
-    
+
 }

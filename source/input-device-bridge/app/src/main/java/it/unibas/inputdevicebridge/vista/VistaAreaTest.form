@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="title" type="java.lang.String" value="Area test"/>
+    <Property name="resizable" type="boolean" value="false"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosed"/>
+  </Events>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jTabbedPane1" min="-2" pref="394" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jTabbedPane1" min="-2" pref="319" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
+      <Properties>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Default Cursor"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[400, 325]"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="jPanel1">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Test click">
+                <Property name="tabTitle" type="java.lang.String" value="Test click"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="bottoneClicca" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="labelNumeroClick" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="195" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="bottoneClicca" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="labelNumeroClick" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="181" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="jLabel3">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Clicca il bottone per effettuare il test."/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="bottoneClicca">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Clicca"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="labelNumeroClick">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Click effettuati: 0"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jPanel2">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Test scroll">
+                <Property name="tabTitle" type="java.lang.String" value="Test scroll"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jScrollPane4" pref="381" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="7" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <Component id="jScrollPane4" pref="242" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="jLabel2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Effettua lo scroll nell&apos;area sottostante"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane4">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextPane" name="jTextPane2">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at tortor pulvinar, finibus ante ac, viverra diam. Aenean sagittis est at nisl condimentum scelerisque. Duis ultrices egestas nisl efficitur eleifend. Phasellus varius, urna sed semper venenatis, ante libero faucibus mauris, eget aliquam risus nunc id purus. Ut ipsum nunc, ornare consequat tempus non, cursus vitae risus. Etiam a nunc vel nibh gravida auctor. Aliquam erat volutpat. Donec eget ipsum nec nisl egestas faucibus. Mauris in hendrerit lectus.&#xa;&#xa;Aenean fringilla aliquet mauris at euismod. Integer varius sollicitudin velit non finibus. Pellentesque sodales sit amet enim sed dignissim. Nam faucibus nisl pretium, ultricies arcu at, suscipit lacus. Donec varius enim et blandit ultrices. In ut euismod erat, vitae mattis nisl. Maecenas sed mi dignissim, mollis ante sed, ultricies dolor. In nec leo convallis dolor sodales consequat.&#xa;&#xa;Nulla et ultricies nisi. Nunc non odio vitae erat tempor vestibulum non in eros. Pellentesque est nulla, efficitur nec venenatis id, viverra sed leo. Pellentesque nec rhoncus felis, vitae semper sapien. Donec congue orci sit amet consequat mattis. Sed cursus cursus tellus. Ut at massa placerat, tempor massa vel, eleifend elit. Integer a metus ante. Nulla vehicula at magna eu blandit. Duis nec tincidunt urna. Maecenas non arcu in felis venenatis pulvinar. Aliquam eu tempus augue. Morbi felis lacus, tristique in massa at, pharetra rhoncus erat. Aenean vehicula arcu ac pretium placerat. Donec faucibus erat metus, et pellentesque sem faucibus nec. Aliquam quis enim a sapien pharetra suscipit.&#xa;&#xa;Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse lacus justo, consectetur non metus consectetur, varius laoreet sapien. Nullam eget orci arcu. Donec tortor lectus, ornare ut condimentum eget, elementum sit amet nisl. Nunc quis enim posuere arcu ullamcorper tempor sit amet sed ligula. Curabitur eleifend eget risus id faucibus. Nam leo dui, cursus id ex et, feugiat aliquam lacus. Ut quis tincidunt dui. Nam sed nisl vel mauris congue placerat. Aenean ut velit suscipit, interdum tortor venenatis, facilisis quam. Donec tortor magna, cursus et est eget, maximus sollicitudin risus.&#xa;&#xa;Phasellus justo justo, feugiat eget tincidunt quis, vestibulum quis purus. Morbi consequat venenatis hendrerit. Proin interdum vitae augue at iaculis. Proin ut ex erat. Donec ut fermentum ipsum, vel mollis elit. Nunc viverra metus vitae interdum ullamcorper. Pellentesque in lectus mollis, venenatis nulla at, tincidunt massa.&#xa;&#xa;Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut sodales in quam ac tincidunt. Nunc et euismod sem. Aenean a velit sollicitudin justo commodo viverra sed sed nulla. Curabitur sapien orci, accumsan in odio ut, scelerisque luctus velit. Duis eget porta odio. Cras nisi tortor, elementum sit amet lacus quis, bibendum congue diam. Fusce euismod sed est in dapibus. Vestibulum eu ante nec mauris consectetur lacinia. Aliquam tristique, ipsum at interdum porta, leo est eleifend tortor, sed pulvinar felis lorem at orci. Curabitur vestibulum erat a tellus ultricies, at pharetra neque posuere.&#xa;&#xa;Etiam elit eros, finibus at purus sit amet, dignissim mattis tellus. Maecenas accumsan ligula eget neque ullamcorper lobortis non non nisl. Morbi congue ex nec diam congue, maximus laoreet eros placerat. In ut leo commodo, fermentum purus sit amet, auctor sem. Donec nec sem sed dui viverra venenatis. Nullam enim arcu, fringilla nec urna vel, finibus egestas velit. Donec eros turpis, pellentesque vitae tempus et, egestas sed augue. Aenean mattis nisl ut erat suscipit, eu aliquet nulla molestie. Ut in augue a massa ultricies auctor.&#xa;&#xa;Aenean et ultrices sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In hac habitasse platea dictumst. Integer suscipit elit dui, sit amet efficitur odio pretium ut. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed facilisis dignissim interdum. Donec vel elementum ligula. Integer eget lacinia purus. Sed feugiat lorem quam, eu tempus est finibus a.&#xa;&#xa;Cras ac purus eu augue auctor lacinia. Aenean tincidunt risus lorem, at suscipit ante luctus at. Quisque vestibulum molestie arcu id cursus. Curabitur varius augue orci, non ornare nunc sodales vitae. Donec felis sem, posuere eu rutrum at, finibus id elit. Fusce nec egestas lorem. In maximus convallis augue eu scelerisque. Ut convallis eu massa vitae varius. In eget pretium ligula.&#xa;&#xa;Aenean eu tellus lorem. Proin facilisis nibh dictum, tristique arcu et, convallis leo. Vivamus tristique enim a pulvinar convallis. Aliquam erat volutpat. Morbi viverra sapien risus, vel dictum odio auctor eget. Etiam mi eros, bibendum et dictum at, condimentum at odio. Etiam facilisis diam at libero dignissim, sit amet imperdiet tellus ultrices."/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jPanel3">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Test trascinamento">
+                <Property name="tabTitle" type="java.lang.String" value="Test trascinamento"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="228" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" pref="242" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="jLabel1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Seleziona il testo sottostante."/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextPane" name="jTextPane3">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis enim ut tellus ullamcorper tristique quis ac nulla. In sodales sit amet lacus at molestie. Mauris vitae turpis est. Nunc placerat, felis vel tincidunt elementum, velit est bibendum massa, consequat congue velit ante vitae dui. Vestibulum fermentum pharetra varius. Mauris blandit placerat finibus. In purus dolor, consequat a molestie sit amet, laoreet nec elit. Fusce sagittis viverra leo, malesuada imperdiet lectus lacinia vitae."/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

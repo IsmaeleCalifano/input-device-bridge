@@ -9,10 +9,6 @@ import java.awt.PointerInfo;
 
 public class EyeTrackerStrategy extends InputDeviceAstrattoStrategy {
 
-    public EyeTrackerStrategy() {
-        super.connetti();
-    }
-
     @Override
     public ISegnale getSegnale() {
         this.catturaSegnaleMouse();

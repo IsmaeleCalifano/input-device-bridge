@@ -9,7 +9,8 @@ public class PressioneProlungataCommand implements IAzioneCommand {
 
     @Override
     public void esegui() {
-        log.info(">> Eseguo azione INIZIO TRASCINAMENTO (Pressione prolungata). <<");
+        log.info(">> Eseguo azione INIZIO PRESSIONE PROLUNGATA). <<");
+        IniettoreAzione.getInstance().premiClickSinistro();
     }
 
     @Override

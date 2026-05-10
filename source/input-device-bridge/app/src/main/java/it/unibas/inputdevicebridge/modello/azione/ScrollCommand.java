@@ -17,13 +17,14 @@ public class ScrollCommand implements IAzioneCommand {
     public void esegui() {
         if (this.quantitaScorrimento != null) {
             log.info(">> Eseguo azione SCROLL di {}. <<", this.quantitaScorrimento);
+            IniettoreAzione.getInstance().scroll(this.quantitaScorrimento);
         }
     }
 
     @Override
     public IInterpreteState getStatoSuccessivo() {
         if (this.quantitaScorrimento == null) {
-            return new ScrollState(System.nanoTime());
+            return new ScrollState();
         }
         return null;
     }

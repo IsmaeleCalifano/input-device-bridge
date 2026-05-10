@@ -17,19 +17,29 @@ public class GestoreAzione {
 
     public GestoreAzione() {
         this.inizializzaMappaAzioniSistema();
-        this.inizializzaMappaAzioni();
+        this.inizializzaMappaAzioniPersonalizzate();
     }
     
     private void inizializzaMappaAzioniSistema() {
         this.mappaAzioniSistema.put(ETipologiaEventoSistema.RILASCIO, new RilascioCommand());
         this.mappaAzioniSistema.put(ETipologiaEventoSistema.SCROLL_SU, new ScrollCommand(-1));
         this.mappaAzioniSistema.put(ETipologiaEventoSistema.SCROLL_GIU, new ScrollCommand(1));
+        this.mappaAzioniSistema.put(ETipologiaEventoSistema.AVVIA_MOVIMENTO, new MovimentoCommand());
+        this.mappaAzioniSistema.put(ETipologiaEventoSistema.FERMA_MOVIMENTO, new NullObjectCommand());
     }
     
-    private void inizializzaMappaAzioni() {
+    public void inizializzamappaComandiPersonalizzati(Map<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> mappaComandiPersonalizzati) {
+        this.mappaComandiPersonalizzati.putAll(mappaComandiPersonalizzati);
+    }
+    
+    private void inizializzaMappaAzioniPersonalizzate() {
         this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.CLICK, new ClickCommand());
         this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.SCROLL, new ScrollCommand());
         this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.TRASCINAMENTO, new PressioneProlungataCommand());
+    }
+    
+    public void putComandiPersonalizzati(Map<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> mappaComandiPersonalizzati) {
+        this.mappaComandiPersonalizzati.putAll(mappaComandiPersonalizzati);
     }
     
     public void putComando(ETipologiaEventoPersonalizzato tipologiaEvento, ETipologiaAzionePersonalizzata tipologiaAzione) {

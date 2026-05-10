@@ -2,18 +2,21 @@ package it.unibas.inputdevicebridge.modello.segnale;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(callSuper = true)
 public class SegnaleDiscreto extends SegnaleAstratto {
     
-    private Boolean attivo;
+    private Float intensita;
 
-    public SegnaleDiscreto(boolean attivo, long timeStamp) {
+    public SegnaleDiscreto(float intensita, long timeStamp) {
         super(timeStamp);
-        this.attivo = attivo;
+        this.intensita = intensita;
+    }
+    
+    @Override
+    public String toString() {
+        return "(Intensita' = " + this.intensita + ")";
     }
     
 }

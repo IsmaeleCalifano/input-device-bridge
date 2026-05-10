@@ -8,16 +8,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FiltroRumore implements IFiltro {
 
+    private Float ultimaIntensita;
     private Punto ultimoPunto;
 
     @Override
     public void filtra(ISegnale segnaleGrezzo) {
-         if (segnaleGrezzo.getAttivo() != null) {
-            //TODO: Implementa logica per segnale discreto
-            log.warn("TODO: Implementa logica per segnale discreto");
-            return;
-        }
-        if (segnaleGrezzo.getPunto() != null) {
+         if (segnaleGrezzo.getIntensita()!= null) {
+             if (this.ultimaIntensita != null) {
+                float smoothedIntensita = this.smoothFloat(this.ultimaIntensita, segnaleGrezzo.getIntensita(), Costanti.ALPHA_INTENSITA);
+                segnaleGrezzo.setIntensita(smoothedIntensita);
+            }
+            this.ultimaIntensita = segnaleGrezzo.getIntensita();
+        } else if (segnaleGrezzo.getPunto() != null) {
             if (this.ultimoPunto != null) {
                 double distanzaEuclidea = segnaleGrezzo.getPunto().calcolaDistanzaEuclidea(this.ultimoPunto);
                 float alphaAttuale = Costanti.ALPHA_SEGNALE_STABILE;
@@ -32,9 +34,13 @@ public class FiltroRumore implements IFiltro {
     }
     
     private Punto smoothPunto(Punto puntoCorrente, float alpha) {
-        float smoothedX = (this.ultimoPunto.getX() * (1 - alpha)) + (puntoCorrente.getX() * alpha);
-        float smoothedY = (this.ultimoPunto.getY() * (1 - alpha)) + (puntoCorrente.getY() * alpha);
+        float smoothedX = this.smoothFloat(this.ultimoPunto.getX(), puntoCorrente.getX(), alpha);
+        float smoothedY = this.smoothFloat(this.ultimoPunto.getY(), puntoCorrente.getY(), alpha);
         return new Punto(smoothedX, smoothedY);
+    }
+    
+    private float smoothFloat(float valorePrecedente, float valoreCorrente, float alpha) {
+        return (valorePrecedente * (1 - alpha)) + (valoreCorrente * alpha);
     }
     
 }

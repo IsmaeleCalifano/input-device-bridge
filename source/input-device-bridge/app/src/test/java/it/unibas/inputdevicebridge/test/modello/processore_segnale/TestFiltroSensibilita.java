@@ -17,7 +17,7 @@ public class TestFiltroSensibilita {
 
     @BeforeEach
     public void setUp() {
-        this.filtroSensibilita = new FiltroSensibilita();
+        this.filtroSensibilita = new FiltroSensibilita(1.2f);
     }
 
     @Test

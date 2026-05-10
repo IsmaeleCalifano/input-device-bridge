@@ -6,8 +6,8 @@ public interface ISegnale {
 
     public long getTimeStamp();
     public void setTimeStamp(long timeStamp);
-    public Boolean getAttivo();
-    public void setAttivo(Boolean attivo);
+    public Float getIntensita();
+    public void setIntensita(Float intensita);
     public Punto getPunto();
     public void setPunto(Punto punto);
     

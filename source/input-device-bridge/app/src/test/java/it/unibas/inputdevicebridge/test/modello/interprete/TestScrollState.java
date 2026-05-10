@@ -24,7 +24,7 @@ public class TestScrollState {
     public void setUp() {
         this.altezzaSchermo = Toolkit.getDefaultToolkit().getScreenSize().height;
         this.centroSchermo = altezzaSchermo / 2.0f;
-        this.scrollState = new ScrollState(this.timeStampIniziale);
+        this.scrollState = new ScrollState();
     }
 
     @Test
@@ -53,7 +53,9 @@ public class TestScrollState {
    
     @Test
     public void testInterpretaSegnaleAlCentro() {
-        ISegnale segnaleAlCentro = new SegnaleContinuo(new Punto(100.0f, this.centroSchermo), this.timeStampIniziale + Costanti.DURATA_1_SECONDO + Costanti.MAX_TEMPO_INATTIVO);
+        ISegnale segnaleAlCentro = new SegnaleContinuo(new Punto(100.0f, this.centroSchermo), this.timeStampIniziale);
+        this.scrollState.interpreta(segnaleAlCentro);
+        segnaleAlCentro = new SegnaleContinuo(new Punto(100.0f, this.centroSchermo), this.timeStampIniziale + Costanti.DURATA_1_SECONDO + Costanti.MAX_TEMPO_INATTIVO);
         EsitoInterpretazione esitoInterpretazione = this.scrollState.interpreta(segnaleAlCentro);
         assertInstanceOf(AttesaState.class, esitoInterpretazione.getStatoSuccessivo());
         assertEquals(ETipologiaEventoSistema.NESSUN_EVENTO, esitoInterpretazione.getTipologiaEvento());
