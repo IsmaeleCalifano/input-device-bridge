@@ -11,7 +11,7 @@ public class TrascinamentoState implements IInterpreteState {
     
     private Punto ultimoPunto;
     private long timeStampSegnaleStabile;
-    private MovimentoState movimentoState;
+    private final MovimentoState movimentoState;
 
     public TrascinamentoState(long timeStampSegnaleStabile) {
         this.timeStampSegnaleStabile = timeStampSegnaleStabile;
@@ -23,7 +23,7 @@ public class TrascinamentoState implements IInterpreteState {
         if (segnale.getIntensita() != null) {
             EsitoInterpretazione esitoInterpretazioneMovimento = movimentoState.interpreta(segnale);
             if (esitoInterpretazioneMovimento.getTipologiaEvento() == ETipologiaEventoSistema.FERMA_MOVIMENTO) {
-               return this.esitoInterpretazioneSegnale(segnale);
+               return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);
             }
             return esitoInterpretazioneMovimento;
         }
@@ -31,7 +31,7 @@ public class TrascinamentoState implements IInterpreteState {
             if (this.ultimoPunto != null) {
                 double distanzaEuclidea = segnale.getPunto().calcolaDistanzaEuclidea(this.ultimoPunto);
                 if (distanzaEuclidea <= Costanti.SOGLIA_SEGNALE_STABILE) {
-                    EsitoInterpretazione esitoInterpretazione = this.esitoInterpretazioneSegnale(segnale);
+                    EsitoInterpretazione esitoInterpretazione = this.esitoInterpretazioneSegnaleDiscreto(segnale);
                     if (esitoInterpretazione.getTipologiaEvento() == ETipologiaEventoSistema.RILASCIO) {
                         return esitoInterpretazione;
                     }
@@ -45,7 +45,7 @@ public class TrascinamentoState implements IInterpreteState {
         return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
     }
     
-    private EsitoInterpretazione esitoInterpretazioneSegnale(ISegnale segnale) {
+    private EsitoInterpretazione esitoInterpretazioneSegnaleDiscreto(ISegnale segnale) {
         long durataSegnale = segnale.getTimeStamp() - this.timeStampSegnaleStabile;
         if (durataSegnale >= Costanti.DURATA_2_SECONDI) {
             return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);

@@ -5,5 +5,8 @@ import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 public interface IInputDeviceStrategy {
 
     public ISegnale getSegnale();
+    public boolean isConnesso();
+    public void connetti();
+    public void disconnetti();
     
 }

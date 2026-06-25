@@ -4,14 +4,15 @@ import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import java.awt.Toolkit;
+import static java.lang.Math.abs;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ScrollState implements IInterpreteState {
     
-    private final int ALTEZZA_SCHERMO = Toolkit.getDefaultToolkit().getScreenSize().height;
-    private final int MARGINE_ALTO = (int) (ALTEZZA_SCHERMO * 0.20);
-    private final int MARGINE_BASSO = (int) (ALTEZZA_SCHERMO * 0.80);
+    private final float ALTEZZA_SCHERMO = (float) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+    private final float MARGINE_ALTO = ALTEZZA_SCHERMO * 0.20f;
+    private final float MARGINE_BASSO = ALTEZZA_SCHERMO * 0.80f;
     private Long timeStampUltimaAttivita;
     private boolean direzioneScrollGiu;
 
@@ -22,7 +23,7 @@ public class ScrollState implements IInterpreteState {
     @Override
     public EsitoInterpretazione interpreta(ISegnale segnale) {
         if (segnale.getIntensita() != null) {
-            if (Math.abs(segnale.getIntensita()) > Costanti.SOGLIA_SEGNALE_STABILE) {
+            if (abs(segnale.getIntensita()) > Costanti.SOGLIA_SEGNALE_STABILE) {
                 if (this.timeStampUltimaAttivita == null) {
                     this.timeStampUltimaAttivita = segnale.getTimeStamp();
                 } else {

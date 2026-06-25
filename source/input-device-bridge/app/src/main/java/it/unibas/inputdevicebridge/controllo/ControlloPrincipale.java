@@ -5,6 +5,7 @@ import it.unibas.inputdevicebridge.modello.Costanti;
 import it.unibas.inputdevicebridge.modello.input_device.EyeTrackerStrategy;
 import it.unibas.inputdevicebridge.modello.input_device.IInputDeviceStrategy;
 import it.unibas.inputdevicebridge.modello.input_device.SwitchStrategy;
+import it.unibas.inputdevicebridge.modello.interprete.AttesaState;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
 import java.awt.event.ActionEvent;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class ControlloPrincipale {
-
+    
     private final Action azioneAggiornaProfiloSelezionato = new AzioneAggiornaProfiloSelezionato();
     private final Action azioneAvvia = new AzioneAvvia();
     private final Action azioneFerma = new AzioneFerma();
@@ -69,10 +70,13 @@ public class ControlloPrincipale {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+            ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_TEMPORANEO);
             if (profiloUtente == null) {
-                Applicazione.getInstance().getFrame().mostraMessaggioErrori("Seleziona o crea un profilo prima di avviare!");
-                return;
+                profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+                if (profiloUtente == null) {
+                    Applicazione.getInstance().getFrame().mostraMessaggioErrori("Seleziona o crea un profilo prima di avviare!");
+                    return;
+                }
             }
             Applicazione.getInstance().getVistaPrincipale().aggiornaStatoEsecuzione(true);
             Applicazione.getInstance().getControlloMenu().getAzioneAreaTest().setEnabled(false);
@@ -103,6 +107,7 @@ public class ControlloPrincipale {
             Applicazione.getInstance().getVistaPrincipale().aggiornaStatoEsecuzione(false);
             Applicazione.getInstance().getDeviceBridge().fermaEsecuzione();
             Applicazione.getInstance().getControlloMenu().getAzioneAreaTest().setEnabled(true);
+            Applicazione.getInstance().getDeviceBridge().getInterprete().setStatoCorrente(new AttesaState());
             log.debug("Esecuzione applicazione fermata!");
         }
 

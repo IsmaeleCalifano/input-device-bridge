@@ -16,7 +16,7 @@ public class SegnaleDiscreto extends SegnaleAstratto {
     
     @Override
     public String toString() {
-        return "(Intensita' = " + this.intensita + ")";
+        return "(Intensita' = " + this.intensita + ", time stamp = " + super.getTimeStamp() + ")";
     }
     
 }

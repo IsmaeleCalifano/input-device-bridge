@@ -47,7 +47,7 @@ public class AcquisizioneState implements IInterpreteState {
             return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_BREVE);
         } else if (durataSegnale >= durataSegnaleMedio && durataSegnale < durataSegnaleLungo) {
             return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_MEDIO);
-        } else if (durataSegnale >= durataSegnaleLungo && durataSegnale < 2 * durataSegnaleLungo) {
+        } else if (durataSegnale >= durataSegnaleLungo && durataSegnale < (durataSegnaleLungo + (Costanti.DURATA_10_SECONDI / 2))) {
             return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_LUNGO);
         } 
         return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.NESSUN_EVENTO);

@@ -8,6 +8,7 @@ import it.unibas.inputdevicebridge.modello.interprete.EsitoInterpretazione;
 import it.unibas.inputdevicebridge.modello.interprete.TrascinamentoState;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import it.unibas.inputdevicebridge.modello.segnale.SegnaleContinuo;
+import it.unibas.inputdevicebridge.modello.segnale.SegnaleDiscreto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,16 +23,18 @@ public class TestTrascinamentoState {
         this.trascinamentoState = new TrascinamentoState(this.timeStampIniziale);
     }
     
+    // ---------- TEST SEGNALE CONTINUO ----------
+
     @Test
-    public void testInterpretaSegnaleIniziale() {
-        EsitoInterpretazione esitoInterpretazione = this.interpretaSegnaleIniziale();
+    public void testInterpretaSegnaleInizialeContinuo() {
+        EsitoInterpretazione esitoInterpretazione = this.interpretaSegnaleInizialeContinuo();
         assertNull(esitoInterpretazione.getStatoSuccessivo());
         assertEquals(ETipologiaEventoSistema.NESSUN_EVENTO, esitoInterpretazione.getTipologiaEvento());
     }
     
     @Test
-    public void testInterpretaSegnaleStabileBreve() {
-        this.interpretaSegnaleIniziale();
+    public void testInterpretaSegnaleStabileBreveContinuo() {
+        this.interpretaSegnaleInizialeContinuo();
         ISegnale segnaleStabileBreve = new SegnaleContinuo(new Punto(100.0f, 100.0f), Costanti.DURATA_1_SECONDO);
         EsitoInterpretazione esitoInterpretazione = this.trascinamentoState.interpreta(segnaleStabileBreve);
         assertNull(esitoInterpretazione.getStatoSuccessivo());
@@ -39,8 +42,8 @@ public class TestTrascinamentoState {
     }
     
     @Test
-    public void testInterpretaSegnaleDinamico() {
-        this.interpretaSegnaleIniziale();
+    public void testInterpretaSegnaleDinamicoContinuo() {
+        this.interpretaSegnaleInizialeContinuo();
         ISegnale segnaleDinamico = new SegnaleContinuo(new Punto(150.0f, 150.0f), this.timeStampIniziale + Costanti.DURATA_1_SECONDO);
         EsitoInterpretazione esitoInterpretazione = this.trascinamentoState.interpreta(segnaleDinamico);
         assertNull(esitoInterpretazione.getStatoSuccessivo());
@@ -48,17 +51,40 @@ public class TestTrascinamentoState {
     }
     
     @Test
-    public void testInterpretaSegnaleRilascio() {
-        this.interpretaSegnaleIniziale();
+    public void testInterpretaSegnaleRilascioContinuo() {
+        this.interpretaSegnaleInizialeContinuo();
         ISegnale segnaleRilascio = new SegnaleContinuo(new Punto(100.0f, 100.0f), this.timeStampIniziale +  3 * Costanti.DURATA_1_SECONDO);
         EsitoInterpretazione esitoInterpretazione = this.trascinamentoState.interpreta(segnaleRilascio);
         assertInstanceOf(AttesaState.class, esitoInterpretazione.getStatoSuccessivo());
         assertEquals(ETipologiaEventoSistema.RILASCIO, esitoInterpretazione.getTipologiaEvento());
     }
     
-    private EsitoInterpretazione interpretaSegnaleIniziale() {
+    private EsitoInterpretazione interpretaSegnaleInizialeContinuo() {
         ISegnale segnaleIniziale = new SegnaleContinuo(new Punto(100.0f, 100.0f), this.timeStampIniziale);
         return this.trascinamentoState.interpreta(segnaleIniziale);
+    }
+
+    // ---------- TEST SEGNALE DISCRETO ----------
+
+    @Test
+    public void testInterpretaSegnaleAvviaMovimentoDiscreto() {
+        long timeStamp = this.timeStampIniziale + Costanti.VELOCITA_SCANSIONE + 10L;
+        ISegnale segnale = new SegnaleDiscreto(Costanti.SOGLIA_SEGNALE_STABILE - 1.0f, timeStamp);
+        EsitoInterpretazione esitoInterpretazione = this.trascinamentoState.interpreta(segnale);
+        assertNull(esitoInterpretazione.getStatoSuccessivo());
+        assertEquals(ETipologiaEventoSistema.AVVIA_MOVIMENTO, esitoInterpretazione.getTipologiaEvento());
+    }
+
+    @Test
+    public void testInterpretaSegnaleCompletaSelezioneRilascioDiscreto() {
+        long timeStamp = this.timeStampIniziale + Costanti.VELOCITA_SCANSIONE + 10L;
+        ISegnale segnaleY = new SegnaleDiscreto(Costanti.SOGLIA_SEGNALE_STABILE + 10.0f, timeStamp);
+        this.trascinamentoState.interpreta(segnaleY);
+        timeStamp = this.timeStampIniziale + Costanti.DURATA_2_SECONDI + 500L; 
+        ISegnale segnaleX = new SegnaleDiscreto(Costanti.SOGLIA_SEGNALE_STABILE + 10.0f, timeStamp);
+        EsitoInterpretazione esitoInterpretazione = this.trascinamentoState.interpreta(segnaleX);
+        assertInstanceOf(AttesaState.class, esitoInterpretazione.getStatoSuccessivo());
+        assertEquals(ETipologiaEventoSistema.RILASCIO, esitoInterpretazione.getTipologiaEvento());
     }
     
 }

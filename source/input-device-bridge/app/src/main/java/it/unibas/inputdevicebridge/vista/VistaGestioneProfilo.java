@@ -13,70 +13,76 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VistaGestioneProfilo extends javax.swing.JDialog {
 
+    private boolean isUpdatingSpinners = false;
+
     public VistaGestioneProfilo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
     }
-    
+
     public void inizializza() {
         initComponents();
+        this.aggiungiListenerSpinners();
         this.formattaSliderDecimali();
         this.inizializzaComboAzioneSegnaleBreve();
         this.inizializzaComboAzioneSegnaleMedio();
         this.inizializzaComboAzioneSegnaleLungo();
     }
-    
+
     private void inizializzaComboAzioneSegnaleBreve() {
         this.comboAzioneSegnaleBreve.removeAllItems();
         for (ETipologiaAzionePersonalizzata tipologiaAzionePersonalizzata : ETipologiaAzionePersonalizzata.values()) {
             this.comboAzioneSegnaleBreve.addItem(tipologiaAzionePersonalizzata);
         }
     }
-    
+
     private void inizializzaComboAzioneSegnaleMedio() {
         this.comboAzioneSegnaleMedio.removeAllItems();
         for (ETipologiaAzionePersonalizzata tipologiaAzionePersonalizzata : ETipologiaAzionePersonalizzata.values()) {
             this.comboAzioneSegnaleMedio.addItem(tipologiaAzionePersonalizzata);
         }
     }
-    
+
     private void inizializzaComboAzioneSegnaleLungo() {
         this.comboAzioneSegnaleLungo.removeAllItems();
         for (ETipologiaAzionePersonalizzata tipologiaAzionePersonalizzata : ETipologiaAzionePersonalizzata.values()) {
             this.comboAzioneSegnaleLungo.addItem(tipologiaAzionePersonalizzata);
         }
     }
-    
+
     public void visualizzaModifica() {
-        this.inizializzaCampiProfiloSelezionato();
+        this.bottoneCalibrazione.setVisible(false);
+        ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+        this.inizializzaCampiProfiloUtente(profiloUtente);
         this.bottoneSalva.setAction(Applicazione.getInstance().getControlloGestioneProfilo().getAzioneSalvaModificheProfilo());
         this.setLocationRelativeTo(this.getParent());
         this.setVisible(true);
     }
-    
+
     public void visualizzaNuovo() {
+        this.bottoneCalibrazione.setVisible(true);
+        this.bottoneCalibrazione.setAction(Applicazione.getInstance().getControlloGestioneProfilo().getAzioneAvviaCalibrazione());
         this.inizializzaCampiNuovoProfilo();
         this.bottoneSalva.setAction(Applicazione.getInstance().getControlloGestioneProfilo().getAzioneSalvaNuovoPrfilo());
         this.setLocationRelativeTo(this.getParent());
         this.setVisible(true);
     }
-    
-    private void inizializzaCampiProfiloSelezionato() {
+
+    public void inizializzaCampiProfiloUtente(ProfiloUtente profiloUtente) {
         super.setTitle("Gestione profilo utente");
-        ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
         this.textFiledNomeProfilo.setText(profiloUtente.getNome());
         this.sliderSogliaSensibilita.setValue((int) (profiloUtente.getSogliaSensibilita() * 10));
         this.sliderSogliaZoneMorte.setValue((int) (profiloUtente.getSogliaZonaMorta() * 10));
-        Map<ETipologiaEventoPersonalizzato, Long> mappaDurataSegnale =  profiloUtente.getMappaDurataSegnale();
+        Map<ETipologiaEventoPersonalizzato, Long> mappaDurataSegnale = profiloUtente.getMappaDurataSegnale();
         this.spinnerSegnaleBreve.setValue((float) mappaDurataSegnale.get(ETipologiaEventoPersonalizzato.SEGNALE_BREVE) / Costanti.DURATA_1_SECONDO);
         this.spinnerSegnaleMedio.setValue((float) mappaDurataSegnale.get(ETipologiaEventoPersonalizzato.SEGNALE_MEDIO) / Costanti.DURATA_1_SECONDO);
         this.spinnerSegnaleLungo.setValue((float) mappaDurataSegnale.get(ETipologiaEventoPersonalizzato.SEGNALE_LUNGO) / Costanti.DURATA_1_SECONDO);
-        Map<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> mappaComandiPersonalizzati =  profiloUtente.getMappaComandiPersonalizzati();
+        Map<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> mappaComandiPersonalizzati = profiloUtente.getMappaComandiPersonalizzati();
         this.comboAzioneSegnaleBreve.setSelectedItem(mappaComandiPersonalizzati.get(ETipologiaEventoPersonalizzato.SEGNALE_BREVE));
         this.comboAzioneSegnaleMedio.setSelectedItem(mappaComandiPersonalizzati.get(ETipologiaEventoPersonalizzato.SEGNALE_MEDIO));
         this.comboAzioneSegnaleLungo.setSelectedItem(mappaComandiPersonalizzati.get(ETipologiaEventoPersonalizzato.SEGNALE_LUNGO));
     }
-    
-     private void inizializzaCampiNuovoProfilo() {
+
+    private void inizializzaCampiNuovoProfilo() {
         super.setTitle("Crea nuovo profilo utente");
         this.textFiledNomeProfilo.setText("");
         this.sliderSogliaSensibilita.setValue(this.sliderSogliaSensibilita.getMinimum());
@@ -88,20 +94,32 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         this.comboAzioneSegnaleMedio.setSelectedItem(ETipologiaAzionePersonalizzata.SCROLL);
         this.comboAzioneSegnaleLungo.setSelectedItem(ETipologiaAzionePersonalizzata.TRASCINAMENTO);
     }
-    
+
     public String getTextCampoNomeProfilo() {
         return this.textFiledNomeProfilo.getText();
     }
-    
+
+    public ETipologiaAzionePersonalizzata getSelectedItemComboSegnaleBreve() {
+        return (ETipologiaAzionePersonalizzata) this.comboAzioneSegnaleBreve.getSelectedItem();
+    }
+
+    public ETipologiaAzionePersonalizzata getSelectedItemComboSegnaleMedio() {
+        return (ETipologiaAzionePersonalizzata) this.comboAzioneSegnaleMedio.getSelectedItem();
+    }
+
+    public ETipologiaAzionePersonalizzata getSelectedItemComboSegnaleLungo() {
+        return (ETipologiaAzionePersonalizzata) this.comboAzioneSegnaleLungo.getSelectedItem();
+    }
+
     public ProfiloUtente getProfiloAggiornato() {
         String nome = this.textFiledNomeProfilo.getText();
         float sogliaSensibilita = this.sliderSogliaSensibilita.getValue() / 10.0f;
         float sogliaZoneMorte = this.sliderSogliaZoneMorte.getValue() / 10.0f;
         ProfiloUtente profiloUtente = new ProfiloUtente(nome, sogliaZoneMorte, sogliaSensibilita);
-        Map<ETipologiaEventoPersonalizzato, Long> mappaDurataSegnale =  profiloUtente.getMappaDurataSegnale();
-        mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_BREVE, (long)(((float) this.spinnerSegnaleBreve.getValue()) * Costanti.DURATA_1_SECONDO));
-        mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_MEDIO, (long)(((float) this.spinnerSegnaleMedio.getValue()) * Costanti.DURATA_1_SECONDO));
-        mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_LUNGO, (long)(((float) this.spinnerSegnaleLungo.getValue()) * Costanti.DURATA_1_SECONDO));
+        Map<ETipologiaEventoPersonalizzato, Long> mappaDurataSegnale = profiloUtente.getMappaDurataSegnale();
+        mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_BREVE, (long) (((float) this.spinnerSegnaleBreve.getValue()) * Costanti.DURATA_1_SECONDO));
+        mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_MEDIO, (long) (((float) this.spinnerSegnaleMedio.getValue()) * Costanti.DURATA_1_SECONDO));
+        mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_LUNGO, (long) (((float) this.spinnerSegnaleLungo.getValue()) * Costanti.DURATA_1_SECONDO));
         profiloUtente.setMappaDurataSegnale(mappaDurataSegnale);
         Map<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> mappaComandiPersonalizzati = new HashMap<>();
         mappaComandiPersonalizzati.put(ETipologiaEventoPersonalizzato.SEGNALE_BREVE, (ETipologiaAzionePersonalizzata) this.comboAzioneSegnaleBreve.getSelectedItem());
@@ -110,12 +128,12 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         profiloUtente.setMappaComandiPersonalizzati(mappaComandiPersonalizzati);
         return profiloUtente;
     }
-    
-    private void formattaSliderDecimali() {      
+
+    private void formattaSliderDecimali() {
         Hashtable<Integer, javax.swing.JLabel> labelSensibilita = new Hashtable<>();
         int minSens = sliderSogliaSensibilita.getMinimum();
         int maxSens = sliderSogliaSensibilita.getMaximum();
-        int stepSens = sliderSogliaSensibilita.getMajorTickSpacing(); 
+        int stepSens = sliderSogliaSensibilita.getMajorTickSpacing();
         for (int i = minSens; i <= maxSens; i += stepSens) {
             String testo = String.valueOf(i / 10.0f);
             labelSensibilita.put(i, new javax.swing.JLabel(testo));
@@ -125,13 +143,75 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         Hashtable<Integer, javax.swing.JLabel> labelZoneMorte = new Hashtable<>();
         int minZone = sliderSogliaZoneMorte.getMinimum();
         int maxZone = sliderSogliaZoneMorte.getMaximum();
-        int stepZone = sliderSogliaZoneMorte.getMajorTickSpacing(); 
+        int stepZone = sliderSogliaZoneMorte.getMajorTickSpacing();
         for (int i = minZone; i <= maxZone; i += stepZone) {
             String testo = String.valueOf(i / 10.0f);
             labelZoneMorte.put(i, new javax.swing.JLabel(testo));
         }
         sliderSogliaZoneMorte.setLabelTable(labelZoneMorte);
         sliderSogliaZoneMorte.setPaintLabels(true);
+    }
+
+    private void aggiungiListenerSpinners() {
+        this.spinnerSegnaleBreve.addChangeListener(e -> this.verificaVincoliDaBreve());
+        this.spinnerSegnaleMedio.addChangeListener(e -> this.verificaVincoliDaMedio());
+        this.spinnerSegnaleLungo.addChangeListener(e -> this.verificaVincoliDaLungo());
+    }
+
+    private void verificaVincoliDaBreve() {
+        if (this.isUpdatingSpinners) {
+            return;
+        }
+        this.isUpdatingSpinners = true;
+        float breve = this.arrotonda((float) this.spinnerSegnaleBreve.getValue());
+        float medio = this.arrotonda((float) this.spinnerSegnaleMedio.getValue());
+        if (breve >= medio) {
+            medio = this.arrotonda(breve + 0.1f);
+            this.spinnerSegnaleMedio.setValue(medio);
+            float lungo = this.arrotonda((float) this.spinnerSegnaleLungo.getValue());
+            if (medio >= lungo) {
+                this.spinnerSegnaleLungo.setValue(this.arrotonda(medio + 0.1f));
+            }
+        }
+        this.isUpdatingSpinners = false;
+    }
+
+    private void verificaVincoliDaMedio() {
+        if (this.isUpdatingSpinners) {
+            return;
+        }
+        this.isUpdatingSpinners = true;
+        float medio = this.arrotonda((float) this.spinnerSegnaleMedio.getValue());
+        float breve = this.arrotonda((float) this.spinnerSegnaleBreve.getValue());
+        float lungo = this.arrotonda((float) this.spinnerSegnaleLungo.getValue());
+        if (medio <= breve) {
+            this.spinnerSegnaleBreve.setValue(this.arrotonda(medio - 0.1f));
+        } else if (medio >= lungo) {
+            this.spinnerSegnaleLungo.setValue(this.arrotonda(medio + 0.1f));
+        }
+        isUpdatingSpinners = false;
+    }
+
+    private void verificaVincoliDaLungo() {
+        if (this.isUpdatingSpinners) {
+            return;
+        }
+        this.isUpdatingSpinners = true;
+        float lungo = this.arrotonda((float) this.spinnerSegnaleLungo.getValue());
+        float medio = this.arrotonda((float) this.spinnerSegnaleMedio.getValue());
+        if (lungo <= medio) {
+            medio = this.arrotonda(lungo - 0.1f);
+            float breve = this.arrotonda((float) this.spinnerSegnaleBreve.getValue());
+            if (medio <= breve) {
+                this.spinnerSegnaleBreve.setValue(this.arrotonda(medio - 0.1f));
+            }
+            this.spinnerSegnaleMedio.setValue(medio);
+        }
+        this.isUpdatingSpinners = false;
+    }
+
+    private float arrotonda(float valore) {
+        return Math.round(valore * 10.0f) / 10.0f;
     }
 
     @SuppressWarnings("unchecked")
@@ -157,6 +237,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         javax.swing.JLabel jLabel11 = new javax.swing.JLabel();
         spinnerSegnaleLungo = new javax.swing.JSpinner();
         javax.swing.JLabel jLabel12 = new javax.swing.JLabel();
+        bottoneCalibrazione = new javax.swing.JButton();
         bottoneSalva = new javax.swing.JButton();
         javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
         textFiledNomeProfilo = new javax.swing.JTextField();
@@ -230,15 +311,17 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
 
         jLabel10.setText("[s]");
 
-        spinnerSegnaleBreve.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.1f), Float.valueOf(0.1f), Float.valueOf(2.9f), Float.valueOf(0.1f)));
+        spinnerSegnaleBreve.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.1f), Float.valueOf(0.1f), Float.valueOf(9.8f), Float.valueOf(0.1f)));
 
-        spinnerSegnaleMedio.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(3.0f), Float.valueOf(3.0f), Float.valueOf(6.9f), Float.valueOf(0.1f)));
+        spinnerSegnaleMedio.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(3.0f), Float.valueOf(0.2f), Float.valueOf(9.9f), Float.valueOf(0.1f)));
 
         jLabel11.setText("[s]");
 
-        spinnerSegnaleLungo.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(7.0f), Float.valueOf(7.0f), Float.valueOf(10.0f), Float.valueOf(0.1f)));
+        spinnerSegnaleLungo.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(7.0f), Float.valueOf(0.3f), Float.valueOf(10.0f), Float.valueOf(0.1f)));
 
         jLabel12.setText("[s]");
+
+        bottoneCalibrazione.setText("Avvia calibrazione");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -247,31 +330,34 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bottoneCalibrazione, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(spinnerSegnaleBreve, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel10))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(spinnerSegnaleLungo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel12)))
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboAzioneSegnaleBreve, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(comboAzioneSegnaleLungo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(spinnerSegnaleMedio, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
-                        .addGap(18, 18, 18)
-                        .addComponent(comboAzioneSegnaleMedio, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(spinnerSegnaleBreve, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel10))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(spinnerSegnaleLungo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel12)))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(comboAzioneSegnaleBreve, 0, 250, Short.MAX_VALUE)
+                                    .addComponent(comboAzioneSegnaleLungo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(spinnerSegnaleMedio, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel11)
+                                .addGap(18, 18, 18)
+                                .addComponent(comboAzioneSegnaleMedio, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -295,6 +381,8 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
                     .addComponent(comboAzioneSegnaleLungo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(spinnerSegnaleLungo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(bottoneCalibrazione)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -319,8 +407,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
-                        .addComponent(textFiledNomeProfilo, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(textFiledNomeProfilo)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -334,7 +421,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(bottoneSalva)
                 .addContainerGap())
         );
@@ -344,6 +431,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bottoneCalibrazione;
     private javax.swing.JButton bottoneSalva;
     private javax.swing.JComboBox<ETipologiaAzionePersonalizzata> comboAzioneSegnaleBreve;
     private javax.swing.JComboBox<ETipologiaAzionePersonalizzata> comboAzioneSegnaleLungo;

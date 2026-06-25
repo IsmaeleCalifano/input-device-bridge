@@ -28,6 +28,7 @@ public class Frame extends javax.swing.JFrame {
         this.menuEsci.setAction(Applicazione.getInstance().getControlloMenu().getAzioneEsci());
         this.menuAreaTest.setAction(Applicazione.getInstance().getControlloMenu().getAzioneAreaTest());
         this.menuInfo.setAction(Applicazione.getInstance().getControlloMenu().getAzioneInfo());
+        this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -35,7 +36,7 @@ public class Frame extends javax.swing.JFrame {
     public void mostraMessaggio(String messaggio){
         JOptionPane.showMessageDialog(this, messaggio, "Input Device Bridge", JOptionPane.INFORMATION_MESSAGE);
    }
-   
+    
    public void mostraMessaggioErrori(String messaggio){
        JOptionPane.showMessageDialog(this, messaggio, "Errore", JOptionPane.ERROR_MESSAGE);
    }
@@ -58,7 +59,7 @@ public class Frame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Input Device Bridge");
         setAlwaysOnTop(true);
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setResizable(false);
 
         jMenu1.setText("File");
 

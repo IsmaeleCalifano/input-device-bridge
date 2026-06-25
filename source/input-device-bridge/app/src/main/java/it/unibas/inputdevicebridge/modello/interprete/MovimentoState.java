@@ -5,17 +5,18 @@ import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
 import it.unibas.inputdevicebridge.modello.Punto;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import static java.lang.Math.abs;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MovimentoState implements IInterpreteState {
-
-    private final int MAX_X = Toolkit.getDefaultToolkit().getScreenSize().width;
-    private final int MAX_Y = Toolkit.getDefaultToolkit().getScreenSize().height;
-    private float y = 0;
-    private float x = 0;
+    Dimension dimensioniSchermo = Toolkit.getDefaultToolkit().getScreenSize(); 
+    private final float MAX_X = (float) dimensioniSchermo.getWidth();
+    private final float MAX_Y = (float) dimensioniSchermo.getHeight();
+    private float y = 0.0f;
+    private float x = 0.0f;
     private boolean faseScansioneY = true;
     private long timeStampUltimoSpostamento = 0;
 
@@ -38,12 +39,12 @@ public class MovimentoState implements IInterpreteState {
             if (this.faseScansioneY) {
                 this.y += Costanti.PASSO_GRIGLIA;
                 if (this.y > MAX_Y) {
-                    this.y = 0;
+                    this.y = 0.0f;
                 }
             } else {
                 this.x += Costanti.PASSO_GRIGLIA;
                 if (this.x > MAX_X) {
-                    this.x = 0;
+                    this.x = 0.0f;
                 }
             }
             Applicazione.getInstance().getModello().putBean(Costanti.PUNTO_MOVIMENTO, new Punto(this.x, this.y));

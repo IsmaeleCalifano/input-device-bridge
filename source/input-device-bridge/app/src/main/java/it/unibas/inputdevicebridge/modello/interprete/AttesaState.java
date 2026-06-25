@@ -1,5 +1,6 @@
 package it.unibas.inputdevicebridge.modello.interprete;
 
+import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
 import it.unibas.inputdevicebridge.modello.Punto;
@@ -8,9 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class AttesaState implements IInterpreteState {
-    
+
     private Punto ultimoPunto;
-    private MovimentoState movimentoState;
+    private final MovimentoState movimentoState;
 
     public AttesaState() {
         this.movimentoState = new MovimentoState();
@@ -18,10 +19,10 @@ public class AttesaState implements IInterpreteState {
 
     @Override
     public EsitoInterpretazione interpreta(ISegnale segnale) {
-        if (segnale.getIntensita()!= null) {
+        if (segnale.getIntensita() != null) {
             EsitoInterpretazione esitoInterpretazioneMovimento = movimentoState.interpreta(segnale);
             if (esitoInterpretazioneMovimento.getTipologiaEvento() == ETipologiaEventoSistema.FERMA_MOVIMENTO) {
-                return new EsitoInterpretazione(new AcquisizioneState(segnale.getTimeStamp()), ETipologiaEventoSistema.NESSUN_EVENTO);
+                return new EsitoInterpretazione(this.getProssimoStato(segnale.getTimeStamp()), ETipologiaEventoSistema.NESSUN_EVENTO);
             }
             return esitoInterpretazioneMovimento;
         }
@@ -29,17 +30,24 @@ public class AttesaState implements IInterpreteState {
             if (this.ultimoPunto != null) {
                 double distanzaEuclidea = segnale.getPunto().calcolaDistanzaEuclidea(this.ultimoPunto);
                 if (distanzaEuclidea <= Costanti.SOGLIA_SEGNALE_STABILE) {
-                    return new EsitoInterpretazione(new AcquisizioneState(segnale.getTimeStamp()), ETipologiaEventoSistema.NESSUN_EVENTO);
+                    return new EsitoInterpretazione(this.getProssimoStato(segnale.getTimeStamp()), ETipologiaEventoSistema.NESSUN_EVENTO);
                 }
             }
             this.ultimoPunto = segnale.getPunto();
         }
         return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
     }
-    
+
+    private IInterpreteState getProssimoStato(long timeStamp) {
+        if (Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_TEMPORANEO) != null) {
+            return new CalibrazioneState(timeStamp);
+        }
+        return new AcquisizioneState(timeStamp);
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName();
     }
-    
+
 }

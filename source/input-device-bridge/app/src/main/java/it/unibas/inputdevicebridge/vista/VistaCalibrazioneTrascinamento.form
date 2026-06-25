@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jScrollPane1" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="249" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="labelTrascinamentiEffettuati" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelTrascinamentiEffettuati" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="211" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Calibrazione trascinamento"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Trascina il cursore per selezionare una parte del testo"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTextPane" name="textPane">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus id odio at facilisis. Sed sodales volutpat facilisis. Cras semper libero ultricies augue viverra, quis ultricies est condimentum. Nam at mauris libero. Vivamus facilisis lacus eu ligula vestibulum posuere. Sed laoreet turpis at lacus pretium, vel varius ex tempus. Integer ac ultricies nisi. Sed eleifend diam et mi finibus, quis tincidunt metus volutpat.&#xa;&#xa;Mauris lacinia, enim ut sollicitudin ornare, arcu diam interdum lacus, non placerat dolor ligula et quam. Morbi tincidunt interdum pretium. Duis varius nisi erat, vel commodo nibh laoreet sed. Curabitur luctus ultrices tortor quis consectetur. Curabitur leo enim, fermentum nec justo varius, rhoncus posuere urna. Integer fermentum risus nec ante accumsan dapibus. Suspendisse eget feugiat quam. Aliquam vitae lacus ultrices turpis scelerisque facilisis. Sed pulvinar suscipit justo, nec imperdiet turpis tempus eget. Proin blandit ultrices ornare. Proin condimentum commodo velit. Proin in dui neque. Nullam a fermentum ligula, vitae tempus quam. Maecenas condimentum molestie pharetra. Sed massa tortor, tempor a bibendum in, bibendum eget augue.&#xa;&#xa;Nullam consequat dui id lorem convallis vehicula. Praesent interdum tincidunt augue ac ultricies. Cras varius velit vitae magna mattis facilisis eget ac est. Ut in faucibus magna. Fusce non quam in sem congue pulvinar at nec orci. Aliquam lobortis urna eu lacus dignissim, vel pharetra lorem molestie. Pellentesque tempus odio vitae metus pellentesque faucibus. Maecenas ultrices est sed sapien cursus, facilisis feugiat sapien dictum. Maecenas leo lorem, ultrices vel nisi quis, mattis luctus ex.&#xa;&#xa;In accumsan eu ipsum ac tempus. Aliquam consequat ullamcorper cursus. Morbi elementum libero in nisi egestas ornare. Etiam hendrerit nec mi in ultricies. Fusce at efficitur massa. Duis hendrerit, augue eget bibendum rhoncus, risus nibh interdum ex, nec gravida felis massa accumsan elit. Sed tempus dui nec nisl posuere aliquam. Mauris rutrum finibus dolor vel pulvinar. Proin eu imperdiet neque. Donec leo ipsum, hendrerit non placerat sit amet, finibus vitae risus. Ut tempor elementum consectetur. Proin sed tempor ex. In congue ante ut pretium dapibus. Nunc eget erat viverra, faucibus dolor at, mollis urna. Duis sit amet turpis a leo maximus ornare.&#xa;&#xa;Nam sagittis tortor a ultricies fringilla. Nulla facilisi. Etiam justo est, venenatis a fringilla at, ornare id augue. Nullam in mollis augue. Morbi laoreet a dolor eget placerat. Etiam porttitor purus in est convallis, at cursus leo tristique. Nulla facilisi. Integer in est eget diam interdum rhoncus et sed sapien. Aenean dolor magna, dapibus a purus sit amet, molestie congue libero. Phasellus maximus lorem at nunc egestas consequat. Praesent mi felis, fermentum vitae sollicitudin eu, semper sit amet massa. Curabitur accumsan congue lectus quis finibus. Fusce viverra ante hendrerit, efficitur tortor et, lacinia nulla.&#xa;&#xa;Nam elementum lorem nec justo iaculis rhoncus. Aliquam vel accumsan odio. Vestibulum porttitor tempor diam nec fringilla. Morbi vestibulum est vitae arcu condimentum convallis. Fusce cursus orci et tortor fermentum, ut porttitor velit hendrerit. Sed id elit nisl. Morbi vestibulum, augue ut mattis fermentum, elit est elementum mi, sit amet gravida lacus mauris vitae arcu. Pellentesque sollicitudin diam felis, eget consequat elit molestie non. Vestibulum sed arcu lacinia, dapibus felis lacinia, blandit risus. Sed lacinia eget leo ut mollis. Maecenas id nunc ac augue placerat facilisis. Duis tempor vel tellus eget tincidunt.&#xa;&#xa;Fusce at velit sed magna commodo venenatis. Ut aliquam purus purus, ut ultrices nunc convallis eget. Donec quis euismod justo, sagittis suscipit tortor. Mauris et volutpat purus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non scelerisque ex. Sed viverra leo nec sem tempus, et accumsan ligula condimentum. Quisque rutrum lobortis ligula, vel ullamcorper sem gravida et. Duis tempor ac arcu eleifend ornare. Vivamus leo magna, elementum nec mi quis, egestas convallis lectus."/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="labelTrascinamentiEffettuati">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Trascinamenti effettuati: -/-"/>
+      </Properties>
+    </Component>
+  </SubComponents>
+</Form>

@@ -26,9 +26,15 @@ public class Costanti {
     public static final float PASSO_GRIGLIA = 10.0f;
     public static final String PUNTO_MOVIMENTO = "PUNTO_MOVIMENTO";
     
+    // ---------- MOVIMENTO ---------- 
+    public static final int NUMERO_TENTATIVI_CALIBRAZIONE = 3;
     
     // ---------- MODELLO ---------- 
     public static final String ARCHIVIO_PROFILI_UTENTE = "ARCHIVIO_PROFILI_UTENTE";
     public static final String PROFILO_UTENTE_SELEZIONATO = "PROFILO_UTENTE_SELEZIONATO";
+    public static final String PROFILO_UTENTE_TEMPORANEO = "PROFILO_UTENTE_TEMPORANEO";
+    public static final String DURATA_SEGNALE_ACQUISITO = "DURATA_SEGNALE_ACQUISITO";
+    public static final String MAPPA_AZIONI_VISTE = "MAPPA_AZIONI_VISTE";
+    public static final String ENTRY_EVENTO_AZIONE_CALIBRAZIONE = "ENTRY_EVENTO_AZIONE_CALIBRAZIONE";
 
 }
