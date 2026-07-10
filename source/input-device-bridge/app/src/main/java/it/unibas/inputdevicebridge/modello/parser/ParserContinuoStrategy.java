@@ -8,7 +8,7 @@ import java.awt.Toolkit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ParserContinuo implements IInputParserStrategy {
+public class ParserContinuoStrategy implements IInputParserStrategy {
 
     private final String delimitatore;
     private final int indiceTimestamp;
@@ -18,7 +18,7 @@ public class ParserContinuo implements IInputParserStrategy {
     private final float altezzaSchermo;
     private CalibratoreCoordinate calibratore;
 
-    public ParserContinuo(String delimitatore, int indiceTimestamp, int indiceX, int indiceY) {
+    public ParserContinuoStrategy(String delimitatore, int indiceTimestamp, int indiceX, int indiceY) {
         this.delimitatore = delimitatore;
         this.indiceTimestamp = indiceTimestamp;
         this.indiceX = indiceX;

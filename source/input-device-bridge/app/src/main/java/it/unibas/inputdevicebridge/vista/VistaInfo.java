@@ -1,9 +1,14 @@
 package it.unibas.inputdevicebridge.vista;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
+@Singleton
 public class VistaInfo extends javax.swing.JDialog {
 
-    public VistaInfo(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    @Inject
+    public VistaInfo(Frame frame) {
+        super(frame, true);
     }
 
     public void inizializza() {

@@ -1,10 +1,14 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import it.unibas.inputdevicebridge.controllo.ControlloCalibrazione;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
+import it.unibas.inputdevicebridge.modello.CalibratoreSegnale;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
@@ -15,14 +19,23 @@ import javax.swing.JPanel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Singleton
 public class VistaCalibrazione extends javax.swing.JDialog {
 
     private javax.swing.JLabel[] labelStep;
     private javax.swing.JSeparator[] separatoriStep;
     private CardLayout layoutPannelloVista;
+    
+    private final Modello modello;
+    private final CalibratoreSegnale calibratoreSegnale;
+    private final ControlloCalibrazione controlloCalibrazione;
 
-    public VistaCalibrazione(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    @Inject
+    public VistaCalibrazione(Frame frame, Modello modello, CalibratoreSegnale calibratoreSegnale, ControlloCalibrazione controlloCalibrazione) {
+        super(frame, true);
+        this.modello = modello;
+        this.calibratoreSegnale = calibratoreSegnale;
+        this.controlloCalibrazione = controlloCalibrazione;
     }
 
     public void inizializza() {
@@ -30,15 +43,15 @@ public class VistaCalibrazione extends javax.swing.JDialog {
         this.labelStep = new javax.swing.JLabel[]{labelStep1, labelStep2, labelStep3};
         this.separatoriStep = new javax.swing.JSeparator[]{separatoreStep1, separatoreStep2};
         this.layoutPannelloVista = (CardLayout) this.pannelloVista.getLayout();
-        this.addWindowListener(Applicazione.getInstance().getControlloCalibrazione().getAzioneChiusuraFinestra());
+        this.addWindowListener(this.controlloCalibrazione.getAzioneChiusuraFinestra());
     }
 
     public void visualizza() {
-        Applicazione.getInstance().getCalibratoreSegnale().resetCalibratore();
-        ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_TEMPORANEO);
-        Applicazione.getInstance().getControlloCalibrazione().inizializza(profiloUtente);
-        List<Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata>> azioniPersonalizzate = Applicazione.getInstance().getControlloCalibrazione().getListaEntryEventiAzioniCalibrazione();
-        Map<ETipologiaAzionePersonalizzata, JPanel> mappaAzioniViste = (Map<ETipologiaAzionePersonalizzata, JPanel>) Applicazione.getInstance().getModello().getBean(Costanti.MAPPA_AZIONI_VISTE);
+        this.calibratoreSegnale.resetCalibratore();
+        ProfiloUtente profiloUtente = (ProfiloUtente) this.modello.getBean(Costanti.PROFILO_UTENTE_TEMPORANEO);
+        this.controlloCalibrazione.inizializza(profiloUtente);
+        List<Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata>> azioniPersonalizzate = this.controlloCalibrazione.getListaEntryEventiAzioniCalibrazione();
+        Map<ETipologiaAzionePersonalizzata, JPanel> mappaAzioniViste = (Map<ETipologiaAzionePersonalizzata, JPanel>) this.modello.getBean(Costanti.MAPPA_AZIONI_VISTE);
         this.pannelloVista.removeAll();
         for (Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> entry : azioniPersonalizzate) {
             ETipologiaAzionePersonalizzata tipologiaAzionePersonalizzata = entry.getValue();
@@ -50,11 +63,11 @@ public class VistaCalibrazione extends javax.swing.JDialog {
         }
         this.setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
         this.setLocationRelativeTo(this.getParent());
-        Applicazione.getInstance().getControlloCalibrazione().avanzaSchermo(this);
+        this.controlloCalibrazione.avanzaSchermo(this);
     }
 
     public void avanzaSchermo() {
-        Applicazione.getInstance().getControlloCalibrazione().avanzaSchermo(this);
+        this.controlloCalibrazione.avanzaSchermo(this);
     }
 
     public void mostraPannelloSuccessivo() {

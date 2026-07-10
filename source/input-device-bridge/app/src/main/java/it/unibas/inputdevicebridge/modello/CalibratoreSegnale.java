@@ -3,6 +3,7 @@ package it.unibas.inputdevicebridge.modello;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ApplicationScoped
 public class CalibratoreSegnale {
 
     private final Map<ETipologiaAzionePersonalizzata, List<Long>> duratePerAzione = new HashMap<>();

@@ -1,5 +1,6 @@
 package it.unibas.inputdevicebridge.test.modello.interprete;
 
+import io.quarkus.test.junit.QuarkusTest;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
 import it.unibas.inputdevicebridge.modello.Punto;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+@QuarkusTest
 public class TestTrascinamentoState {
 
     private TrascinamentoState trascinamentoState;
@@ -80,6 +82,8 @@ public class TestTrascinamentoState {
         long timeStamp = this.timeStampIniziale + Costanti.VELOCITA_SCANSIONE + 10L;
         ISegnale segnaleY = new SegnaleDiscreto(Costanti.SOGLIA_SEGNALE_STABILE + 10.0f, timeStamp);
         this.trascinamentoState.interpreta(segnaleY);
+        ISegnale segnaleRilascio = new SegnaleDiscreto(0.0f, timeStamp + 10L);
+        this.trascinamentoState.interpreta(segnaleRilascio);
         timeStamp = this.timeStampIniziale + Costanti.DURATA_2_SECONDI + 500L; 
         ISegnale segnaleX = new SegnaleDiscreto(Costanti.SOGLIA_SEGNALE_STABILE + 10.0f, timeStamp);
         EsitoInterpretazione esitoInterpretazione = this.trascinamentoState.interpreta(segnaleX);

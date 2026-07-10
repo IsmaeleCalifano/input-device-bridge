@@ -34,6 +34,7 @@ public class GestoreAzione {
     
     private void inizializzaMappaAzioniPersonalizzate() {
         this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.CLICK, new ClickCommand());
+        this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.DOPPIO_CLICK, new DoppioClickCommand());
         this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.SCROLL, new ScrollCommand());
         this.mappaAzioniPersonalizzate.put(ETipologiaAzionePersonalizzata.TRASCINAMENTO, new PressioneProlungataCommand());
     }

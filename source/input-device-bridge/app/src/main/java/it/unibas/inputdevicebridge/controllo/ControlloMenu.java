@@ -1,9 +1,15 @@
 package it.unibas.inputdevicebridge.controllo;
 
-import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
+import it.unibas.inputdevicebridge.vista.Frame;
+import it.unibas.inputdevicebridge.vista.VistaAreaTest;
+import it.unibas.inputdevicebridge.vista.VistaGestioneProfilo;
+import it.unibas.inputdevicebridge.vista.VistaInfo;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
@@ -12,7 +18,15 @@ import javax.swing.KeyStroke;
 import lombok.Getter;
 
 @Getter
+@ApplicationScoped
 public class ControlloMenu {
+
+    private final Modello modello;
+    private final Frame frame;
+    private final VistaGestioneProfilo vistaGestioneProfilo;
+    private final VistaAreaTest vistaAreaTest;
+    private final VistaInfo vistaInfo;
+    private final ControlloPrincipale controlloPrincipale;
 
     private final Action azioneEsci = new AzioneEsci();
     private final Action azioneNuovoProfilo = new AzioneNuovoProfilo();
@@ -20,12 +34,22 @@ public class ControlloMenu {
     private final Action azioneAreaTest = new AzioneAreaTest();
     private final Action azioneInfo = new AzioneInfo();
 
+    @Inject
+    public ControlloMenu(Modello modello, Frame frame, VistaGestioneProfilo vistaGestioneProfilo, VistaAreaTest vistaAreaTest, VistaInfo vistaInfo, ControlloPrincipale controlloPrincipale) {
+        this.modello = modello;
+        this.frame = frame;
+        this.vistaGestioneProfilo = vistaGestioneProfilo;
+        this.vistaAreaTest = vistaAreaTest;
+        this.vistaInfo = vistaInfo;
+        this.controlloPrincipale = controlloPrincipale;
+    }
+
     public void inizializza() {
         this.inizializzaAzioneGestioneProfilo();
     }
 
     private void inizializzaAzioneGestioneProfilo() {
-        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) this.modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
         this.azioneGestioneProfilo.setEnabled(!archivioProfiliUtente.getListaProfiliUtente().isEmpty());
     }
 
@@ -40,9 +64,17 @@ public class ControlloMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            controlloPrincipale.getAzioneFerma().actionPerformed(null);
+            Thread threadInputDeviceBridge = controlloPrincipale.getThreadInputDeviceBridge();
+            if (threadInputDeviceBridge != null) {
+                try {
+                    threadInputDeviceBridge.join(500);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            }
             System.exit(0);
         }
-
     }
 
     private class AzioneNuovoProfilo extends AbstractAction {
@@ -56,7 +88,7 @@ public class ControlloMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Applicazione.getInstance().getVistaGestioneProfilo().visualizzaNuovo();
+            vistaGestioneProfilo.visualizzaNuovo();
         }
 
     }
@@ -72,7 +104,7 @@ public class ControlloMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Applicazione.getInstance().getVistaGestioneProfilo().visualizzaModifica();
+            vistaGestioneProfilo.visualizzaModifica();
         }
 
     }
@@ -88,13 +120,13 @@ public class ControlloMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+            ProfiloUtente profiloUtente = (ProfiloUtente) modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
             if (profiloUtente == null) {
-                Applicazione.getInstance().getFrame().mostraMessaggioErrori("Seleziona o crea un profilo prima di avviare l'area test!");
+                frame.mostraMessaggioErrori("Seleziona o crea un profilo prima di avviare l'area test!");
                 return;
             }
-            Applicazione.getInstance().getControlloPrincipale().getAzioneAvvia().actionPerformed(null);
-            Applicazione.getInstance().getVistaAreaTest().visualizza();
+            controlloPrincipale.getAzioneAvvia().actionPerformed(null);
+            vistaAreaTest.visualizza();
         }
 
     }
@@ -110,7 +142,7 @@ public class ControlloMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Applicazione.getInstance().getVistaInfo().visualizza();
+            vistaInfo.visualizza();
         }
 
     }

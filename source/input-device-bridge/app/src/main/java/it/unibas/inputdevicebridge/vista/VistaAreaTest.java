@@ -1,25 +1,33 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import it.unibas.inputdevicebridge.controllo.ControlloAreaTest;
+import it.unibas.inputdevicebridge.controllo.ControlloPrincipale;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.awt.GraphicsEnvironment;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Singleton
 public class VistaAreaTest extends javax.swing.JDialog {
-    
+
     @Getter
     @Setter
-    private int numeroClick;
+    private int numeroClick = 0;
 
-    public VistaAreaTest(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        this.numeroClick = 0;
+    private final ControlloAreaTest controlloAreaTest;
+    private final ControlloPrincipale controlloPrincipale;
+
+    @Inject
+    public VistaAreaTest(Frame frame, ControlloAreaTest controlloAreaTest, ControlloPrincipale controlloPrincipale) {
+        super(frame, true);
+        this.controlloAreaTest = controlloAreaTest;
+        this.controlloPrincipale = controlloPrincipale;
     }
 
     public void inizializza() {
         initComponents();
-        this.bottoneClicca.setAction(Applicazione.getInstance().getControlloAreaTest().getAzioneClicca());
+        this.bottoneClicca.setAction(this.controlloAreaTest.getAzioneClicca());
     }
 
     public void visualizza() {
@@ -29,7 +37,7 @@ public class VistaAreaTest extends javax.swing.JDialog {
         this.setLocationRelativeTo(this.getParent());
         this.setVisible(true);
     }
-    
+
     public void aggiornaLabelNumeroClick() {
         this.labelNumeroClick.setText("Click effettuati: " + this.numeroClick);
     }
@@ -179,7 +187,7 @@ public class VistaAreaTest extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        Applicazione.getInstance().getControlloPrincipale().getAzioneFerma().actionPerformed(null);
+        this.controlloPrincipale.getAzioneFerma().actionPerformed(null);
     }//GEN-LAST:event_formWindowClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

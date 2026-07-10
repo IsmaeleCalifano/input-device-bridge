@@ -1,4 +1,4 @@
-# Input Device Bridge&nbsp;&nbsp;&nbsp;&nbsp;![Stato del progetto](https://img.shields.io/badge/Stato-In_sviluppo-orange)
+# Input Device Bridge&nbsp;&nbsp;&nbsp;&nbsp;![Stato del progetto](https://img.shields.io/badge/Stato-Completato-green)
 
 ## Struttura del repository
 La struttura del progetto è organizzata come segue:

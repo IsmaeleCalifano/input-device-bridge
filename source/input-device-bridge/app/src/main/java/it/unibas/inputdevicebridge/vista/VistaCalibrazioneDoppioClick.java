@@ -1,6 +1,6 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.controllo.ControlloCalibrazioneClick;
+import it.unibas.inputdevicebridge.controllo.ControlloCalibrazioneDoppioClick;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.modello.CalibratoreSegnale;
 import it.unibas.inputdevicebridge.modello.Costanti;
@@ -8,30 +8,30 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class VistaCalibrazioneClick extends javax.swing.JPanel implements IVistaCalibrazione {
+public class VistaCalibrazioneDoppioClick extends javax.swing.JPanel implements IVistaCalibrazione {
     
     private final CalibratoreSegnale calibratoreSegnale;
-    private final ControlloCalibrazioneClick controlloCalibrazioneClick;
+    private final ControlloCalibrazioneDoppioClick controlloCalibrazioneDoppioClick;
 
     @Inject
-    public VistaCalibrazioneClick(CalibratoreSegnale calibratoreSegnale, ControlloCalibrazioneClick controlloCalibrazioneClick) {
+    public VistaCalibrazioneDoppioClick(CalibratoreSegnale calibratoreSegnale, ControlloCalibrazioneDoppioClick controlloCalibrazioneDoppioClick) {
         this.calibratoreSegnale = calibratoreSegnale;
-        this.controlloCalibrazioneClick = controlloCalibrazioneClick;
+        this.controlloCalibrazioneDoppioClick = controlloCalibrazioneDoppioClick;
     }
     
     public void inizializza() {
         initComponents();
-        this.bottoneClick.setAction(this.controlloCalibrazioneClick.getAzioneCalibraClick());
+        this.bottoneDoppioClick.addMouseListener(this.controlloCalibrazioneDoppioClick.getMouseListenerDoppioClick());
         this.resetLabelContatore();
     }
 
     public void aggiornaLabelClickEffettuati(int numeroClickEffettuati) {
-        this.labelClickEffettuati.setText("Click effettuati: " + numeroClickEffettuati + "/" + Costanti.NUMERO_TENTATIVI_CALIBRAZIONE);
+        this.labelDoppiClickEffettuati.setText("Doppi click effettuati: " + numeroClickEffettuati + "/" + Costanti.NUMERO_TENTATIVI_CALIBRAZIONE);
     }
     
     @Override
     public void resetLabelContatore() {
-        int numeroClickEffettuati = this.calibratoreSegnale.numeroElementiDurateAzione(ETipologiaAzionePersonalizzata.CLICK);
+        int numeroClickEffettuati = this.calibratoreSegnale.numeroElementiDurateAzione(ETipologiaAzionePersonalizzata.DOPPIO_CLICK);
         this.aggiornaLabelClickEffettuati(numeroClickEffettuati);
     }
 
@@ -40,18 +40,18 @@ public class VistaCalibrazioneClick extends javax.swing.JPanel implements IVista
     private void initComponents() {
 
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        bottoneClick = new javax.swing.JButton();
-        labelClickEffettuati = new javax.swing.JLabel();
+        bottoneDoppioClick = new javax.swing.JButton();
+        labelDoppiClickEffettuati = new javax.swing.JLabel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
 
         jLabel2.setText("Premi il pulsante diverse volte");
 
-        bottoneClick.setText("Clicca");
+        bottoneDoppioClick.setText("Doppio click");
 
-        labelClickEffettuati.setText("Click effettuati: -/-");
+        labelDoppiClickEffettuati.setText("Doppi click effettuati: -/-");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Calibrazione del click");
+        jLabel1.setText("Calibrazione del  doppio click");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -62,12 +62,12 @@ public class VistaCalibrazioneClick extends javax.swing.JPanel implements IVista
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
-                        .addComponent(labelClickEffettuati))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addComponent(labelDoppiClickEffettuati))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(bottoneClick))
+                            .addComponent(bottoneDoppioClick))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -79,17 +79,17 @@ public class VistaCalibrazioneClick extends javax.swing.JPanel implements IVista
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(labelClickEffettuati))
+                    .addComponent(labelDoppiClickEffettuati))
                 .addGap(18, 18, 18)
-                .addComponent(bottoneClick)
+                .addComponent(bottoneDoppioClick)
                 .addContainerGap(190, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bottoneClick;
-    private javax.swing.JLabel labelClickEffettuati;
+    private javax.swing.JButton bottoneDoppioClick;
+    private javax.swing.JLabel labelDoppiClickEffettuati;
     // End of variables declaration//GEN-END:variables
 
 }

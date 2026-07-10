@@ -1,6 +1,6 @@
 package it.unibas.inputdevicebridge.test.modello.parser;
 
-import it.unibas.inputdevicebridge.modello.parser.ParserContinuo;
+import it.unibas.inputdevicebridge.modello.parser.ParserContinuoStrategy;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestParserContinuo {
 
-    private ParserContinuo parser;
+    private ParserContinuoStrategy parser;
     private float larghezzaSchermo;
     private float altezzaSchermo;
 
     @BeforeEach
     public void setUp() throws Exception {
-        this.parser = new ParserContinuo(",", 0, 1, 2);
+        this.parser = new ParserContinuoStrategy(",", 0, 1, 2);
         Dimension dimensioniSchermo = Toolkit.getDefaultToolkit().getScreenSize();
         this.larghezzaSchermo = (float) dimensioniSchermo.getWidth();
         this.altezzaSchermo = (float) dimensioniSchermo.getHeight();

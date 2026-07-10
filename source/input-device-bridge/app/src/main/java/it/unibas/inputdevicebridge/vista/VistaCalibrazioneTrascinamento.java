@@ -1,18 +1,31 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import it.unibas.inputdevicebridge.controllo.ControlloCalibrazioneTrascinamento;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
+import it.unibas.inputdevicebridge.modello.CalibratoreSegnale;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.awt.event.MouseAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Singleton
 public class VistaCalibrazioneTrascinamento extends javax.swing.JPanel implements IVistaCalibrazione {
+
+    private final CalibratoreSegnale calibratoreSegnale;
+    private final ControlloCalibrazioneTrascinamento controlloCalibrazioneTrascinamento;
+
+    @Inject
+    public VistaCalibrazioneTrascinamento(CalibratoreSegnale calibratoreSegnale, ControlloCalibrazioneTrascinamento controlloCalibrazioneTrascinamento) {
+        this.calibratoreSegnale = calibratoreSegnale;
+        this.controlloCalibrazioneTrascinamento = controlloCalibrazioneTrascinamento;
+    }
 
     public void inizializza() {
         initComponents();
         this.resetLabelContatore();
-        MouseAdapter listenerTrascinamento = Applicazione.getInstance().getControlloCalibrazioneTrascinamento().getListenerTrascinamento();
+        MouseAdapter listenerTrascinamento = this.controlloCalibrazioneTrascinamento.getListenerTrascinamento();
         this.textPane.addMouseListener(listenerTrascinamento);
         this.textPane.addMouseMotionListener(listenerTrascinamento);
     }
@@ -27,7 +40,7 @@ public class VistaCalibrazioneTrascinamento extends javax.swing.JPanel implement
 
     @Override
     public void resetLabelContatore() {
-        int numeroTrascinamentiEffettuati = Applicazione.getInstance().getCalibratoreSegnale().numeroElementiDurateAzione(ETipologiaAzionePersonalizzata.TRASCINAMENTO);
+        int numeroTrascinamentiEffettuati = this.calibratoreSegnale.numeroElementiDurateAzione(ETipologiaAzionePersonalizzata.TRASCINAMENTO);
         this.aggiornaLabelTrascinamentiEffettuati(numeroTrascinamentiEffettuati);
     }
 

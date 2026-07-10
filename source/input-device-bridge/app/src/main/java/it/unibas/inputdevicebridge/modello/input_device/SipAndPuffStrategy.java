@@ -3,14 +3,12 @@ package it.unibas.inputdevicebridge.modello.input_device;
 import it.unibas.inputdevicebridge.modello.parser.ParserDiscretoStrategy;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import it.unibas.inputdevicebridge.modello.segnale.SegnaleDiscreto;
-import it.unibas.inputdevicebridge.persistenza.DAOFileLog;
-import lombok.extern.slf4j.Slf4j;
+import it.unibas.inputdevicebridge.persistenza.mock.DAOFileLogGeneratoreDiscretoMock;
 
-@Slf4j
-public class SwitchStrategy extends InputDeviceAstrattoStrategy {
+public class SipAndPuffStrategy extends InputDeviceAstrattoStrategy {
     
-    public SwitchStrategy() {
-        super(new DAOFileLog(), new ParserDiscretoStrategy(",", 0, 1), "Switch.log");
+    public SipAndPuffStrategy() {
+        super(new DAOFileLogGeneratoreDiscretoMock(), new ParserDiscretoStrategy(",", 0, 1), "SipAndPuff.log");
     }
 
     @Override

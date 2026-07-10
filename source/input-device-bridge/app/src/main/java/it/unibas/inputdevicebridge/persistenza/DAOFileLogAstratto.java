@@ -11,12 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class DAOFileLogAstratto implements IDAOFileLog {
 
     private RandomAccessFile randomAccessFile;
-    private String percorsoFile;
 
     @Override
     public void apriFlussoLetturaFileLog(String percorsoFile) throws DAOException {
         try {
-            this.percorsoFile = percorsoFile;
             this.randomAccessFile = new RandomAccessFile(percorsoFile, "r");
             log.info("Flusso in lettura per il file indicato aperto correttamente dal disco!");
             this.verificaStrutturaFile();

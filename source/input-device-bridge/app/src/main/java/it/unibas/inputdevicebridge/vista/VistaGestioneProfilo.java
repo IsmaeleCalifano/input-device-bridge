@@ -1,22 +1,33 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import it.unibas.inputdevicebridge.controllo.ControlloGestioneProfilo;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Singleton
 public class VistaGestioneProfilo extends javax.swing.JDialog {
 
     private boolean isUpdatingSpinners = false;
 
-    public VistaGestioneProfilo(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    private final Modello modello;
+    private final ControlloGestioneProfilo controlloGestioneProfilo;
+
+    @Inject
+    public VistaGestioneProfilo(Frame frame, Modello modello, ControlloGestioneProfilo controlloGestioneProfilo) {
+        super(frame, true);
+        this.modello = modello;
+        this.controlloGestioneProfilo = controlloGestioneProfilo;
     }
 
     public void inizializza() {
@@ -26,6 +37,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         this.inizializzaComboAzioneSegnaleBreve();
         this.inizializzaComboAzioneSegnaleMedio();
         this.inizializzaComboAzioneSegnaleLungo();
+        this.bottoneEliminaProfilo.setAction(this.controlloGestioneProfilo.getAzioneEliminaProfiloUtente());
     }
 
     private void inizializzaComboAzioneSegnaleBreve() {
@@ -51,18 +63,20 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
 
     public void visualizzaModifica() {
         this.bottoneCalibrazione.setVisible(false);
-        ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+        this.bottoneEliminaProfilo.setVisible(true);
+        ProfiloUtente profiloUtente = (ProfiloUtente) this.modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
         this.inizializzaCampiProfiloUtente(profiloUtente);
-        this.bottoneSalva.setAction(Applicazione.getInstance().getControlloGestioneProfilo().getAzioneSalvaModificheProfilo());
+        this.bottoneSalva.setAction(this.controlloGestioneProfilo.getAzioneSalvaModificheProfilo());
         this.setLocationRelativeTo(this.getParent());
         this.setVisible(true);
     }
 
     public void visualizzaNuovo() {
         this.bottoneCalibrazione.setVisible(true);
-        this.bottoneCalibrazione.setAction(Applicazione.getInstance().getControlloGestioneProfilo().getAzioneAvviaCalibrazione());
+        this.bottoneEliminaProfilo.setVisible(false);
+        this.bottoneCalibrazione.setAction(this.controlloGestioneProfilo.getAzioneAvviaCalibrazione());
         this.inizializzaCampiNuovoProfilo();
-        this.bottoneSalva.setAction(Applicazione.getInstance().getControlloGestioneProfilo().getAzioneSalvaNuovoPrfilo());
+        this.bottoneSalva.setAction(this.controlloGestioneProfilo.getAzioneSalvaNuovoPrfilo());
         this.setLocationRelativeTo(this.getParent());
         this.setVisible(true);
     }
@@ -214,6 +228,14 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         return Math.round(valore * 10.0f) / 10.0f;
     }
 
+    public void mostraMessaggio(String messaggio) {
+        JOptionPane.showMessageDialog(this, messaggio, "Input Device Bridge", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void mostraMessaggioErrori(String messaggio) {
+        JOptionPane.showMessageDialog(this, messaggio, "Errore", JOptionPane.ERROR_MESSAGE);
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -241,6 +263,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
         bottoneSalva = new javax.swing.JButton();
         javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
         textFiledNomeProfilo = new javax.swing.JTextField();
+        bottoneEliminaProfilo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestione profilo utente");
@@ -392,6 +415,9 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
 
         textFiledNomeProfilo.setName(""); // NOI18N
 
+        bottoneEliminaProfilo.setForeground(new java.awt.Color(255, 0, 51));
+        bottoneEliminaProfilo.setText("Elimina");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -402,7 +428,8 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(bottoneEliminaProfilo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bottoneSalva))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
@@ -422,7 +449,9 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addComponent(bottoneSalva)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bottoneSalva)
+                    .addComponent(bottoneEliminaProfilo))
                 .addContainerGap())
         );
 
@@ -432,6 +461,7 @@ public class VistaGestioneProfilo extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bottoneCalibrazione;
+    private javax.swing.JButton bottoneEliminaProfilo;
     private javax.swing.JButton bottoneSalva;
     private javax.swing.JComboBox<ETipologiaAzionePersonalizzata> comboAzioneSegnaleBreve;
     private javax.swing.JComboBox<ETipologiaAzionePersonalizzata> comboAzioneSegnaleLungo;

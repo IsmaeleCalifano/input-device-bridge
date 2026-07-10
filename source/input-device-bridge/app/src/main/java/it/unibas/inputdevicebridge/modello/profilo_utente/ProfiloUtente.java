@@ -4,6 +4,7 @@ import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ProfiloUtente {
     
+    @EqualsAndHashCode.Include
     private String nome;
     private float sogliaZonaMorta;
     private float sogliaSensibilita;
@@ -24,5 +27,5 @@ public class ProfiloUtente {
         this.sogliaZonaMorta = sogliaZonaMorta;
         this.sogliaSensibilita = sogliaSensibilita;
     }
-    
+
 }

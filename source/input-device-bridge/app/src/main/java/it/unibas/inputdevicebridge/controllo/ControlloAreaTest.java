@@ -1,7 +1,8 @@
 package it.unibas.inputdevicebridge.controllo;
 
-import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.vista.VistaAreaTest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
@@ -12,9 +13,17 @@ import javax.swing.KeyStroke;
 import lombok.Getter;
 
 @Getter
+@ApplicationScoped
 public class ControlloAreaTest {
+    
+    private final VistaAreaTest vistaAreaTest;
 
-    private Action azioneClicca = new AzioneClicca();
+    private final Action azioneClicca = new AzioneClicca();
+
+    @Inject
+    public ControlloAreaTest(VistaAreaTest vistaAreaTest) {
+        this.vistaAreaTest = vistaAreaTest;
+    }
 
     private class AzioneClicca extends AbstractAction {
 
@@ -27,7 +36,6 @@ public class ControlloAreaTest {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            VistaAreaTest vistaAreaTest = Applicazione.getInstance().getVistaAreaTest();
             int numeroClick = vistaAreaTest.getNumeroClick();
             vistaAreaTest.setNumeroClick(++numeroClick);
             vistaAreaTest.aggiornaLabelNumeroClick();

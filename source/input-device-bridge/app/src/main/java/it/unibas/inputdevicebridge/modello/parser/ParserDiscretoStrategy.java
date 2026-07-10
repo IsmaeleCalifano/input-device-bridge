@@ -5,7 +5,7 @@ import it.unibas.inputdevicebridge.modello.segnale.SegnaleDiscreto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ParserDiscreto implements IInputParserStrategy {
+public class ParserDiscretoStrategy implements IInputParserStrategy {
 
     private final String delimitatore;
     private final int indiceTimestamp;
@@ -14,7 +14,7 @@ public class ParserDiscreto implements IInputParserStrategy {
     private float valoreRiposo = 0.0f;
     private float valoreMassimo = 1.0f;
 
-    public ParserDiscreto(String delimitatore, int indiceTimestamp, int indiceIntensita) {
+    public ParserDiscretoStrategy(String delimitatore, int indiceTimestamp, int indiceIntensita) {
         this.delimitatore = delimitatore;
         this.indiceTimestamp = indiceTimestamp;
         this.indiceIntensita = indiceIntensita;

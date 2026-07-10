@@ -1,13 +1,20 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import it.unibas.inputdevicebridge.controllo.ControlloMenu;
+import it.unibas.inputdevicebridge.controllo.ControlloPrincipale;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.DeviceBridgeFacade;
 import it.unibas.inputdevicebridge.modello.IDeviceObserver;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.Punto;
 import it.unibas.inputdevicebridge.modello.input_device.EyeTrackerStrategy;
+import it.unibas.inputdevicebridge.modello.input_device.HeadPointerStrategy;
+import it.unibas.inputdevicebridge.modello.input_device.SipAndPuffStrategy;
 import it.unibas.inputdevicebridge.modello.input_device.SwitchStrategy;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -17,20 +24,34 @@ import javax.swing.Timer;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Singleton
 public class VistaPrincipale extends javax.swing.JPanel implements IDeviceObserver {
 
     private Timer timerLampeggio;
     private Color coloreStatoCorrente;
+    
+    private final Modello modello;
+    private final DeviceBridgeFacade deviceBridgeFacade;
+    private final ControlloPrincipale controlloPrincipale;
+    private final ControlloMenu controlloMenu;
+
+    @Inject
+    public VistaPrincipale(Modello modello, DeviceBridgeFacade deviceBridgeFacade, ControlloPrincipale controlloPrincipale, ControlloMenu controlloMenu) {
+        this.modello = modello;
+        this.deviceBridgeFacade = deviceBridgeFacade;
+        this.controlloPrincipale = controlloPrincipale;
+        this.controlloMenu = controlloMenu;
+    }
 
     public void inizializza() {
         initComponents();
-        Applicazione.getInstance().getDeviceBridge().addObserver(this);
+        this.deviceBridgeFacade.addObserver(this);
         this.inizializzaComboProfili();
         this.inizializzaActionCommandRadio();
-        this.bottoneGesioneProfilo.setAction(Applicazione.getInstance().getControlloMenu().getAzioneGestioneProfilo());
-        this.bottoneAvvia.setAction(Applicazione.getInstance().getControlloPrincipale().getAzioneAvvia());
-        this.bottoneFerma.setAction(Applicazione.getInstance().getControlloPrincipale().getAzioneFerma());
-        ActionListener azioneAggiornaDispositivoSelezionato = Applicazione.getInstance().getControlloPrincipale().getAzioneAggiornaDispositivoSelezionato();
+        this.bottoneGesioneProfilo.setAction(this.controlloMenu.getAzioneGestioneProfilo());
+        this.bottoneAvvia.setAction(this.controlloPrincipale.getAzioneAvvia());
+        this.bottoneFerma.setAction(this.controlloPrincipale.getAzioneFerma());
+        ActionListener azioneAggiornaDispositivoSelezionato = this.controlloPrincipale.getAzioneAggiornaDispositivoSelezionato();
         azioneAggiornaDispositivoSelezionato.actionPerformed(null);
         this.radioEyeTracker.addActionListener(azioneAggiornaDispositivoSelezionato);
         this.radioHeadPointer.addActionListener(azioneAggiornaDispositivoSelezionato);
@@ -42,25 +63,25 @@ public class VistaPrincipale extends javax.swing.JPanel implements IDeviceObserv
     public void inizializzaComboProfili() {
         this.comboProfili.setAction(null);
         this.comboProfili.removeAllItems();
-        ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+        ProfiloUtente profiloUtente = (ProfiloUtente) this.modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
         if (profiloUtente == null) {
             this.comboProfili.setEnabled(false);
         } else {
             this.comboProfili.setEnabled(true);
-            ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+            ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) this.modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
             for (ProfiloUtente profiloUtenteCorrente : archivioProfiliUtente.getListaProfiliUtente()) {
                 this.comboProfili.addItem(profiloUtenteCorrente.getNome());
             }
             this.comboProfili.setSelectedItem(profiloUtente.getNome());
         }
-        this.comboProfili.setAction(Applicazione.getInstance().getControlloPrincipale().getAzioneAggiornaProfiloSelezionato());
+        this.comboProfili.setAction(this.controlloPrincipale.getAzioneAggiornaProfiloSelezionato());
     }
 
     private void inizializzaActionCommandRadio() {
         this.radioEyeTracker.setActionCommand(EyeTrackerStrategy.class.getSimpleName());
-        //this.radioHeadPointer.setActionCommand(HeadPointerStrategy.class.getSimpleName());
+        this.radioHeadPointer.setActionCommand(HeadPointerStrategy.class.getSimpleName());
         this.radioSwitch.setActionCommand(SwitchStrategy.class.getSimpleName());
-        //this.radioSipAndPuff.setActionCommand(SipAndPuffStrategy.class.getSimpleName());
+        this.radioSipAndPuff.setActionCommand(SipAndPuffStrategy.class.getSimpleName());
     }
 
     public String getTextItemSelezionataComboProfili() {
@@ -230,14 +251,12 @@ public class VistaPrincipale extends javax.swing.JPanel implements IDeviceObserv
 
         buttonGroupDispositivo.add(radioHeadPointer);
         radioHeadPointer.setText("Head-pointer");
-        radioHeadPointer.setEnabled(false);
 
         buttonGroupDispositivo.add(radioSwitch);
         radioSwitch.setText("Switch");
 
         buttonGroupDispositivo.add(radioSipAndPuff);
         radioSipAndPuff.setText("Sip and puff");
-        radioSipAndPuff.setEnabled(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

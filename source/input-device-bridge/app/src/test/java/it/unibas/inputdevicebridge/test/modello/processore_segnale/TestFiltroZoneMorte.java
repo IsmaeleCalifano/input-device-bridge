@@ -58,14 +58,14 @@ public class TestFiltroZoneMorte {
 
     @Test
     public void testFiltraSegnaleSottoSogliaPositivoDiscreto() {
-        ISegnale segnale = new SegnaleDiscreto(2.0f, this.timeStampIniziale);
+        ISegnale segnale = new SegnaleDiscreto(0.5f, this.timeStampIniziale);
         this.filtroZoneMorte.filtra(segnale);
         assertEquals(0.0f, segnale.getIntensita(), 0.001f);
     }
 
     @Test
     public void testFiltraSegnaleSottoSogliaNegativoDiscreto() {
-        ISegnale segnale = new SegnaleDiscreto(-2.5f, this.timeStampIniziale);
+        ISegnale segnale = new SegnaleDiscreto(-0.5f, this.timeStampIniziale);
         this.filtroZoneMorte.filtra(segnale);
         assertEquals(0.0f, segnale.getIntensita(), 0.001f);
     }

@@ -1,10 +1,11 @@
 package it.unibas.inputdevicebridge.modello.interprete;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import io.quarkus.arc.Arc;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.Punto;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
 import static java.lang.Math.abs;
@@ -34,21 +35,23 @@ public class AcquisizioneState implements IInterpreteState {
             }
             this.ultimoPunto = segnale.getPunto();
         }
-        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
+        long durataSegnaleAttuale = segnale.getTimeStamp() - this.timeStampInizioAcquisizione;
+        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO,durataSegnaleAttuale);
     }
     
     private EsitoInterpretazione esitoInterpretazione(ISegnale segnale) {
-        ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+        Modello modello = Arc.container().instance(Modello.class).get();
+        ProfiloUtente profiloUtente = (ProfiloUtente) modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
         long durataSegnaleBreve = profiloUtente.getMappaDurataSegnale().get(ETipologiaEventoPersonalizzato.SEGNALE_BREVE);
         long durataSegnaleMedio = profiloUtente.getMappaDurataSegnale().get(ETipologiaEventoPersonalizzato.SEGNALE_MEDIO);
         long durataSegnaleLungo = profiloUtente.getMappaDurataSegnale().get(ETipologiaEventoPersonalizzato.SEGNALE_LUNGO);
         long durataSegnale = segnale.getTimeStamp() - this.timeStampInizioAcquisizione;
         if (durataSegnale >= durataSegnaleBreve && durataSegnale < durataSegnaleMedio) {
-            return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_BREVE);
+            return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_BREVE, this.ultimoPunto);
         } else if (durataSegnale >= durataSegnaleMedio && durataSegnale < durataSegnaleLungo) {
-            return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_MEDIO);
+            return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_MEDIO, this.ultimoPunto);
         } else if (durataSegnale >= durataSegnaleLungo && durataSegnale < (durataSegnaleLungo + (Costanti.DURATA_10_SECONDI / 2))) {
-            return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_LUNGO);
+            return new EsitoInterpretazione(null, ETipologiaEventoPersonalizzato.SEGNALE_LUNGO, this.ultimoPunto);
         } 
         return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.NESSUN_EVENTO);
     }

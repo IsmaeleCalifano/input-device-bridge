@@ -1,13 +1,20 @@
 package it.unibas.inputdevicebridge.controllo;
 
-import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.DeviceBridgeFacade;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.input_device.EyeTrackerStrategy;
+import it.unibas.inputdevicebridge.modello.input_device.HeadPointerStrategy;
 import it.unibas.inputdevicebridge.modello.input_device.IInputDeviceStrategy;
+import it.unibas.inputdevicebridge.modello.input_device.SipAndPuffStrategy;
 import it.unibas.inputdevicebridge.modello.input_device.SwitchStrategy;
 import it.unibas.inputdevicebridge.modello.interprete.AttesaState;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
+import it.unibas.inputdevicebridge.vista.Frame;
+import it.unibas.inputdevicebridge.vista.VistaPrincipale;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -21,19 +28,37 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
+@ApplicationScoped
 public class ControlloPrincipale {
-    
+
+    private final Modello modello;
+    private final DeviceBridgeFacade deviceBridgeFacade;
+    private final Frame frame;
+    private final VistaPrincipale vistaPrincipale;
+    private final ControlloMenu controlloMenu;
+
+    private Thread threadInputDeviceBridge;
+
     private final Action azioneAggiornaProfiloSelezionato = new AzioneAggiornaProfiloSelezionato();
     private final Action azioneAvvia = new AzioneAvvia();
     private final Action azioneFerma = new AzioneFerma();
     private final ActionListener azioneAggiornaDispositivoSelezionato = new AzioneAggiornaDispositivoSelezionato();
+
+    @Inject
+    public ControlloPrincipale(Modello modello, DeviceBridgeFacade deviceBridgeFacade, Frame frame, VistaPrincipale vistaPrincipale, ControlloMenu controlloMenu) {
+        this.modello = modello;
+        this.deviceBridgeFacade = deviceBridgeFacade;
+        this.frame = frame;
+        this.vistaPrincipale = vistaPrincipale;
+        this.controlloMenu = controlloMenu;
+    }
 
     public void inizializza() {
         this.inizializzaAzioneAggiornaProfiloSelezionato();
     }
 
     private void inizializzaAzioneAggiornaProfiloSelezionato() {
-        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) this.modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
         this.azioneAggiornaProfiloSelezionato.setEnabled(!archivioProfiliUtente.getListaProfiliUtente().isEmpty());
     }
 
@@ -48,12 +73,13 @@ public class ControlloPrincipale {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String nomeProfiloUtenteSelezionato = Applicazione.getInstance().getVistaPrincipale().getTextItemSelezionataComboProfili();
-            ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+            String nomeProfiloUtenteSelezionato = vistaPrincipale.getTextItemSelezionataComboProfili();
+            ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
             ProfiloUtente profiloUtenteSelezionato = archivioProfiliUtente.getProfiloUtentePerNome(nomeProfiloUtenteSelezionato);
+            log.debug("Nome profiloutente selezionato: {}", profiloUtenteSelezionato.getNome());
             if (profiloUtenteSelezionato != null) {
-                Applicazione.getInstance().getModello().putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, profiloUtenteSelezionato);
-                Applicazione.getInstance().getDeviceBridge().applicaProfiloUtente(profiloUtenteSelezionato);
+                modello.putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, profiloUtenteSelezionato);
+                deviceBridgeFacade.applicaProfiloUtente(profiloUtenteSelezionato);
             }
         }
 
@@ -70,21 +96,24 @@ public class ControlloPrincipale {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_TEMPORANEO);
+            if (threadInputDeviceBridge != null && threadInputDeviceBridge.isAlive()) {
+                return;
+            }
+            ProfiloUtente profiloUtente = (ProfiloUtente) modello.getBean(Costanti.PROFILO_UTENTE_TEMPORANEO);
             if (profiloUtente == null) {
-                profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+                profiloUtente = (ProfiloUtente) modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
                 if (profiloUtente == null) {
-                    Applicazione.getInstance().getFrame().mostraMessaggioErrori("Seleziona o crea un profilo prima di avviare!");
+                    frame.mostraMessaggioErrori("Seleziona o crea un profilo prima di avviare!");
                     return;
                 }
             }
-            Applicazione.getInstance().getVistaPrincipale().aggiornaStatoEsecuzione(true);
-            Applicazione.getInstance().getControlloMenu().getAzioneAreaTest().setEnabled(false);
+            vistaPrincipale.aggiornaStatoEsecuzione(true);
+            controlloMenu.getAzioneAreaTest().setEnabled(false);
             log.debug("Applicazione in esecuzione!");
-            Thread threadInputDeviceBridge = new Thread(new Runnable() {
+            threadInputDeviceBridge = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Applicazione.getInstance().getDeviceBridge().esegui();
+                    deviceBridgeFacade.esegui();
                 }
             });
             threadInputDeviceBridge.start();
@@ -104,10 +133,10 @@ public class ControlloPrincipale {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Applicazione.getInstance().getVistaPrincipale().aggiornaStatoEsecuzione(false);
-            Applicazione.getInstance().getDeviceBridge().fermaEsecuzione();
-            Applicazione.getInstance().getControlloMenu().getAzioneAreaTest().setEnabled(true);
-            Applicazione.getInstance().getDeviceBridge().getInterprete().setStatoCorrente(new AttesaState());
+            vistaPrincipale.aggiornaStatoEsecuzione(false);
+            deviceBridgeFacade.fermaEsecuzione();
+            controlloMenu.getAzioneAreaTest().setEnabled(true);
+            deviceBridgeFacade.getInterprete().setStatoCorrente(new AttesaState());
             log.debug("Esecuzione applicazione fermata!");
         }
 
@@ -117,16 +146,20 @@ public class ControlloPrincipale {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String nomeDispositivoSlezionato = Applicazione.getInstance().getVistaPrincipale().getTextRadioDispositiviSelezionato();
+            String nomeDispositivoSlezionato = vistaPrincipale.getTextRadioDispositiviSelezionato();
             IInputDeviceStrategy device = null;
             if (nomeDispositivoSlezionato.equals(EyeTrackerStrategy.class.getSimpleName())) {
                 device = new EyeTrackerStrategy();
+            } else if (nomeDispositivoSlezionato.equals(HeadPointerStrategy.class.getSimpleName())) {
+                device = new HeadPointerStrategy();
             } else if (nomeDispositivoSlezionato.equals(SwitchStrategy.class.getSimpleName())) {
                 device = new SwitchStrategy();
+            } else if (nomeDispositivoSlezionato.equals(SipAndPuffStrategy.class.getSimpleName())) {
+                device = new SipAndPuffStrategy();
             }
             if (device != null) {
                 log.debug("Dispositivo selezionato: {}.", nomeDispositivoSlezionato);
-                Applicazione.getInstance().getDeviceBridge().setDevice(device);
+                deviceBridgeFacade.setDevice(device);
             }
         }
 

@@ -166,7 +166,6 @@
                   <ComponentRef name="buttonGroupDispositivo"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Head-pointer"/>
-                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JRadioButton" name="radioSwitch">
@@ -183,7 +182,6 @@
                   <ComponentRef name="buttonGroupDispositivo"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Sip and puff"/>
-                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
           </SubComponents>

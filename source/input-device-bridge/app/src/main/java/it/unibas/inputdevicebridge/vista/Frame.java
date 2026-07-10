@@ -1,13 +1,17 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import it.unibas.inputdevicebridge.controllo.ControlloMenu;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
+@Singleton
 public class Frame extends javax.swing.JFrame {
     
     static{
@@ -16,18 +20,25 @@ public class Frame extends javax.swing.JFrame {
         } catch (Exception ex) {
         }
     }
+    
+    @Inject
+    private VistaPrincipale vistaPrincipale;
+    @Inject
+    private ControlloMenu controlloMenu;
+    @Inject
+    private Modello modello;
 
     public void inizializza() {
         initComponents();
-        this.setContentPane(new JScrollPane(Applicazione.getInstance().getVistaPrincipale()));
-        this.menuNuovoProfilo.setAction(Applicazione.getInstance().getControlloMenu().getAzioneNuovoProfilo());
-        Action azioneGestioneProfilo = Applicazione.getInstance().getControlloMenu().getAzioneGestioneProfilo();
-        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+        this.setContentPane(new JScrollPane(this.vistaPrincipale));
+        this.menuNuovoProfilo.setAction(this.controlloMenu.getAzioneNuovoProfilo());
+        Action azioneGestioneProfilo = this.controlloMenu.getAzioneGestioneProfilo();
+        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) this.modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
         azioneGestioneProfilo.setEnabled(!archivioProfiliUtente.getListaProfiliUtente().isEmpty());
         this.menuGestioneProfilo.setAction(azioneGestioneProfilo);
-        this.menuEsci.setAction(Applicazione.getInstance().getControlloMenu().getAzioneEsci());
-        this.menuAreaTest.setAction(Applicazione.getInstance().getControlloMenu().getAzioneAreaTest());
-        this.menuInfo.setAction(Applicazione.getInstance().getControlloMenu().getAzioneInfo());
+        this.menuEsci.setAction(this.controlloMenu.getAzioneEsci());
+        this.menuAreaTest.setAction(this.controlloMenu.getAzioneAreaTest());
+        this.menuInfo.setAction(this.controlloMenu.getAzioneInfo());
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -58,7 +69,6 @@ public class Frame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Input Device Bridge");
-        setAlwaysOnTop(true);
         setResizable(false);
 
         jMenu1.setText("File");

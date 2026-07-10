@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TrascinamentoState implements IInterpreteState {
-    
+
     private Punto ultimoPunto;
     private long timeStampSegnaleStabile;
     private final MovimentoState movimentoState;
@@ -23,39 +23,35 @@ public class TrascinamentoState implements IInterpreteState {
         if (segnale.getIntensita() != null) {
             EsitoInterpretazione esitoInterpretazioneMovimento = movimentoState.interpreta(segnale);
             if (esitoInterpretazioneMovimento.getTipologiaEvento() == ETipologiaEventoSistema.FERMA_MOVIMENTO) {
-               return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);
+                return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);
             }
             return esitoInterpretazioneMovimento;
         }
         if (segnale.getPunto() != null) {
             if (this.ultimoPunto != null) {
                 double distanzaEuclidea = segnale.getPunto().calcolaDistanzaEuclidea(this.ultimoPunto);
-                if (distanzaEuclidea <= Costanti.SOGLIA_SEGNALE_STABILE) {
-                    EsitoInterpretazione esitoInterpretazione = this.esitoInterpretazioneSegnaleDiscreto(segnale);
-                    if (esitoInterpretazione.getTipologiaEvento() == ETipologiaEventoSistema.RILASCIO) {
-                        return esitoInterpretazione;
-                    }
+                if (distanzaEuclidea <= Costanti.SOGLIA_AREA_MAX) {
+                    return this.esitoInterpretazioneSegnaleContinuo(segnale);
                 } else {
                     this.timeStampSegnaleStabile = segnale.getTimeStamp();
                 }
-
             }
             this.ultimoPunto = segnale.getPunto();
         }
         return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
     }
-    
-    private EsitoInterpretazione esitoInterpretazioneSegnaleDiscreto(ISegnale segnale) {
+
+    private EsitoInterpretazione esitoInterpretazioneSegnaleContinuo(ISegnale segnale) {
         long durataSegnale = segnale.getTimeStamp() - this.timeStampSegnaleStabile;
         if (durataSegnale >= Costanti.DURATA_2_SECONDI) {
             return new EsitoInterpretazione(new AttesaState(), ETipologiaEventoSistema.RILASCIO);
         }
-        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
+        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO, durataSegnale);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName();
     }
-    
+
 }

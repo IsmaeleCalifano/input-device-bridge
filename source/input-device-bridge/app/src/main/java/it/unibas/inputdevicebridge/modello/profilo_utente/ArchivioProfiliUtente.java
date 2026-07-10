@@ -19,6 +19,10 @@ public class ArchivioProfiliUtente {
         this.listaProfiliUtente.remove(profiloUtente);
     }
     
+    public int size() {
+        return this.listaProfiliUtente.size();
+    }
+    
     public ProfiloUtente getProfiloUtentePerIndice(int indice) {
         if (indice < 0 || indice >= this.listaProfiliUtente.size()) {
             return null;

@@ -1,8 +1,10 @@
 package it.unibas.inputdevicebridge.modello;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Map;
 
+@ApplicationScoped
 public class Modello {
     
     private final Map<String, Object> beans = new HashMap<>();

@@ -1,9 +1,11 @@
 package it.unibas.inputdevicebridge.test.modello.interprete;
 
+import io.quarkus.test.junit.QuarkusTest;
 import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.Punto;
 import it.unibas.inputdevicebridge.modello.interprete.AcquisizioneState;
 import it.unibas.inputdevicebridge.modello.interprete.AttesaState;
@@ -12,14 +14,18 @@ import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import it.unibas.inputdevicebridge.modello.segnale.SegnaleContinuo;
 import it.unibas.inputdevicebridge.modello.segnale.SegnaleDiscreto;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+@QuarkusTest
 public class TestAcquisizioneState {
 
+    @Inject
+    private Modello modello;
     private AcquisizioneState acquisizioneState;
     private ProfiloUtente profiloUtente;
     private final long timeStampIniziale = 0L;
@@ -32,7 +38,7 @@ public class TestAcquisizioneState {
         mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_LUNGO, Costanti.DURATA_10_SECONDI);
         this.profiloUtente = new ProfiloUtente("Utente 01", 3.0f, 1.2f);
         this.profiloUtente.setMappaDurataSegnale(mappaDurataSegnale);
-        Applicazione.getInstance().getModello().putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, this.profiloUtente);
+        this.modello.putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, this.profiloUtente);
         this.acquisizioneState = new AcquisizioneState(this.timeStampIniziale);
     }
 

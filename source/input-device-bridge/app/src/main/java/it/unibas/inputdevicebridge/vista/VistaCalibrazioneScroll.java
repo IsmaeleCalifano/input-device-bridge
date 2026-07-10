@@ -1,20 +1,31 @@
 package it.unibas.inputdevicebridge.vista;
 
-import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.controllo.ControlloCalibrazioneScroll;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
+import it.unibas.inputdevicebridge.modello.CalibratoreSegnale;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Singleton
 public class VistaCalibrazioneScroll extends javax.swing.JPanel implements IVistaCalibrazione {
+    
+    private final CalibratoreSegnale calibratoreSegnale;
+    private final ControlloCalibrazioneScroll controlloCalibrazioneScroll;
+
+    @Inject
+    public VistaCalibrazioneScroll(CalibratoreSegnale calibratoreSegnale, ControlloCalibrazioneScroll controlloCalibrazioneScroll) {
+        this.calibratoreSegnale = calibratoreSegnale;
+        this.controlloCalibrazioneScroll = controlloCalibrazioneScroll;
+    }
 
     public void inizializza() {
         initComponents();
         this.resetLabelContatore();
-        ControlloCalibrazioneScroll controlloCalibrazioneScroll = Applicazione.getInstance().getControlloCalibrazioneScroll();
-        controlloCalibrazioneScroll.inizializzaTracking();
-        this.scrollPaneTesto.addMouseWheelListener(controlloCalibrazioneScroll.getListenerScroll());
+        this.controlloCalibrazioneScroll.inizializzaTracking();
+        this.scrollPaneTesto.addMouseWheelListener(this.controlloCalibrazioneScroll.getListenerScroll());
     }
 
     public void aggiornaLabelScrollEffettuati(int numeroScrollEffettuati) {
@@ -23,7 +34,7 @@ public class VistaCalibrazioneScroll extends javax.swing.JPanel implements IVist
 
     @Override
     public void resetLabelContatore() {
-        int numeroScrollEffettuati = Applicazione.getInstance().getCalibratoreSegnale().numeroElementiDurateAzione(ETipologiaAzionePersonalizzata.SCROLL);
+        int numeroScrollEffettuati = this.calibratoreSegnale.numeroElementiDurateAzione(ETipologiaAzionePersonalizzata.SCROLL);
         this.aggiornaLabelScrollEffettuati(numeroScrollEffettuati);
     }
 

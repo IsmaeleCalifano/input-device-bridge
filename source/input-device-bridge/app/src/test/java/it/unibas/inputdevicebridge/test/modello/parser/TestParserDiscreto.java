@@ -1,6 +1,6 @@
 package it.unibas.inputdevicebridge.test.modello.parser;
 
-import it.unibas.inputdevicebridge.modello.parser.ParserDiscreto;
+import it.unibas.inputdevicebridge.modello.parser.ParserDiscretoStrategy;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestParserDiscreto {
 
-    private ParserDiscreto parser;
+    private ParserDiscretoStrategy parser;
 
     @BeforeEach
     public void setUp() throws Exception {
-        this.parser = new ParserDiscreto(",", 0, 1);
+        this.parser = new ParserDiscretoStrategy(",", 0, 1);
         this.parser.parse("@CALIBRAZIONE, 10, 50, 100");
     }
 

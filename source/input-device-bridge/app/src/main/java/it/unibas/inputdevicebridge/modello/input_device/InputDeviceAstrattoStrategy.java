@@ -4,6 +4,10 @@ import it.unibas.inputdevicebridge.modello.parser.IInputParserStrategy;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import it.unibas.inputdevicebridge.persistenza.DAOException;
 import it.unibas.inputdevicebridge.persistenza.IDAOFileLog;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,16 +17,21 @@ public abstract class InputDeviceAstrattoStrategy implements IInputDeviceStrateg
 
     private ISegnale segnale;
     private boolean connesso;
-    private IDAOFileLog daoFileLog;
-    private IInputParserStrategy parser;
-    private String percorsoFile;
+    private final IDAOFileLog daoFileLog;
+    private final IInputParserStrategy parser;
+    private final String percorsoFile;
 
     public InputDeviceAstrattoStrategy(IDAOFileLog daoFileLog, IInputParserStrategy parser, String nomeFile) {
         this.daoFileLog = daoFileLog;
         this.parser = parser;
-        String tempDir = System.getProperty("java.io.tmpdir");
-        this.percorsoFile = tempDir + "input-device-bridge/" + nomeFile;
-        log.debug(percorsoFile);
+        try {
+            Path dir = Paths.get(System.getProperty("java.io.tmpdir"), "input-device-bridge");
+            Files.createDirectories(dir);
+            this.percorsoFile = dir.resolve(nomeFile).toString();
+            log.debug("Percorso file: {}", this.percorsoFile);
+        } catch (IOException e) {
+            throw new IllegalStateException("Impossibile creare la directory temporanea", e);
+        }
         this.segnale = this.creaSegnaleRiposo();
     }
 

@@ -1,8 +1,9 @@
 package it.unibas.inputdevicebridge.modello.interprete;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import io.quarkus.arc.Arc;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.Punto;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,8 @@ public class AttesaState implements IInterpreteState {
     }
 
     private IInterpreteState getProssimoStato(long timeStamp) {
-        if (Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_TEMPORANEO) != null) {
+        Modello modello = Arc.container().instance(Modello.class).get();
+        if (modello.getBean(Costanti.PROFILO_UTENTE_TEMPORANEO) != null) {
             return new CalibrazioneState(timeStamp);
         }
         return new AcquisizioneState(timeStamp);

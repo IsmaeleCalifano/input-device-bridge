@@ -1,16 +1,29 @@
 package it.unibas.inputdevicebridge.controllo;
 
-import it.unibas.inputdevicebridge.Applicazione;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.DeviceBridgeFacade;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
 import it.unibas.inputdevicebridge.persistenza.DAOException;
+import it.unibas.inputdevicebridge.persistenza.IDAOArchivioProfiliUtente;
+import it.unibas.inputdevicebridge.vista.Frame;
+import it.unibas.inputdevicebridge.vista.VistaCalibrazione;
+import it.unibas.inputdevicebridge.vista.VistaCalibrazioneClick;
+import it.unibas.inputdevicebridge.vista.VistaCalibrazioneDoppioClick;
+import it.unibas.inputdevicebridge.vista.VistaCalibrazioneScroll;
+import it.unibas.inputdevicebridge.vista.VistaCalibrazioneTrascinamento;
 import it.unibas.inputdevicebridge.vista.VistaGestioneProfilo;
+import it.unibas.inputdevicebridge.vista.VistaPrincipale;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.AbstractAction;
@@ -24,25 +37,68 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
+@ApplicationScoped
 public class ControlloGestioneProfilo {
+
+    private final Modello modello;
+    private final DeviceBridgeFacade deviceBridgeFacade;
+    private final IDAOArchivioProfiliUtente daoArchivioProfiliUtente;
+    private final Frame frame;
+    private final VistaPrincipale vistaPrincipale;
+    private final VistaGestioneProfilo vistaGestioneProfilo;
+    private final VistaCalibrazione vistaCalibrazione;
+    private final VistaCalibrazioneClick vistaCalibrazioneClick;
+    private final VistaCalibrazioneDoppioClick vistaCalibrazioneDoppioClick;
+    private final VistaCalibrazioneScroll vistaCalibrazioneScroll;
+    private final VistaCalibrazioneTrascinamento vistaCalibrazioneTrascinamento;
+    private final ControlloMenu controlloMenu;
+    private final ControlloPrincipale controlloPrincipale;
+
+    @Inject
+    public ControlloGestioneProfilo(Modello modello, DeviceBridgeFacade deviceBridgeFacade, IDAOArchivioProfiliUtente daoArchivioProfiliUtente, Frame frame, VistaPrincipale vistaPrincipale, VistaGestioneProfilo vistaGestioneProfilo, VistaCalibrazione vistaCalibrazione, VistaCalibrazioneClick vistaCalibrazioneClick, VistaCalibrazioneDoppioClick vistaCalibrazioneDoppioClick, VistaCalibrazioneScroll vistaCalibrazioneScroll, VistaCalibrazioneTrascinamento vistaCalibrazioneTrascinamento, ControlloMenu controlloMenu, ControlloPrincipale controlloPrincipale) {
+        this.modello = modello;
+        this.deviceBridgeFacade = deviceBridgeFacade;
+        this.daoArchivioProfiliUtente = daoArchivioProfiliUtente;
+        this.frame = frame;
+        this.vistaPrincipale = vistaPrincipale;
+        this.vistaGestioneProfilo = vistaGestioneProfilo;
+        this.vistaCalibrazione = vistaCalibrazione;
+        this.vistaCalibrazioneClick = vistaCalibrazioneClick;
+        this.vistaCalibrazioneDoppioClick = vistaCalibrazioneDoppioClick;
+        this.vistaCalibrazioneScroll = vistaCalibrazioneScroll;
+        this.vistaCalibrazioneTrascinamento = vistaCalibrazioneTrascinamento;
+        this.controlloMenu = controlloMenu;
+        this.controlloPrincipale = controlloPrincipale;
+    }
 
     private final Action azioneAvviaCalibrazione = new AzioneAvviaCalibrazione();
     private final Action azioneSalvaModificheProfilo = new AzioneSalvaModificheProfilo();
     private final Action azioneSalvaNuovoPrfilo = new AzioneSalvaNuovoPrfilo();
+    private final Action azioneEliminaProfiloUtente = new AzioneEliminaProfiloUtente();
 
-    private String convalida(String nomeProfiloUtente, ETipologiaAzionePersonalizzata itemComboSegnaleBreve, ETipologiaAzionePersonalizzata itemComboSegnaleMedio, ETipologiaAzionePersonalizzata itemComboSegnaleLungo) {
+    private String convalida(ProfiloUtente profiloUtente) {
         StringBuilder errori = new StringBuilder();
-        if (nomeProfiloUtente.trim().isEmpty()) {
+        if (profiloUtente.getNome().trim().isEmpty()) {
             errori.append("Per avviare la calibrazione e' necessario inserire un nome per il profilo utente!");
         }
-        Set<ETipologiaAzionePersonalizzata> itemSelezionati = new HashSet<>();
-        itemSelezionati.add(itemComboSegnaleBreve);
-        itemSelezionati.add(itemComboSegnaleMedio);
-        itemSelezionati.add(itemComboSegnaleLungo);
-        if (itemSelezionati.size() < 3) {
+        if (this.verificaItemSelezionatiDuplicati(profiloUtente)) {
             errori.append("\nLe azioni selezionate devo essere tutte distinte!");
         }
         return errori.toString();
+    }
+
+    private boolean verificaProfiloDuplicato(ProfiloUtente profiloUtente) {
+        ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) this.modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+        return archivioProfiliUtente.getListaProfiliUtente().contains(profiloUtente);
+    }
+
+    private boolean verificaItemSelezionatiDuplicati(ProfiloUtente profiloUtente) {
+        Set<ETipologiaAzionePersonalizzata> itemSelezionati = new HashSet<>();
+        List<ETipologiaAzionePersonalizzata> listaComandiPersonalizzati = new ArrayList<>(profiloUtente.getMappaComandiPersonalizzati().values());
+        for (ETipologiaAzionePersonalizzata comandoPersonalizzato : listaComandiPersonalizzati) {
+            itemSelezionati.add(comandoPersonalizzato);
+        }
+        return itemSelezionati.size() < listaComandiPersonalizzati.size();
     }
 
     private class AzioneAvviaCalibrazione extends AbstractAction {
@@ -56,30 +112,60 @@ public class ControlloGestioneProfilo {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            VistaGestioneProfilo vistaGestioneProfilo = Applicazione.getInstance().getVistaGestioneProfilo();
-            String nomeProfiloUtente = vistaGestioneProfilo.getTextCampoNomeProfilo();
-            ETipologiaAzionePersonalizzata itemComboSegnaleBreve = vistaGestioneProfilo.getSelectedItemComboSegnaleBreve();
-            ETipologiaAzionePersonalizzata itemComboSegnaleMedio = vistaGestioneProfilo.getSelectedItemComboSegnaleMedio();
-            ETipologiaAzionePersonalizzata itemComboSegnaleLungo = vistaGestioneProfilo.getSelectedItemComboSegnaleLungo();
-            String errori = convalida(nomeProfiloUtente, itemComboSegnaleBreve, itemComboSegnaleMedio, itemComboSegnaleLungo);
+            ProfiloUtente profiloUtenteTemporaneo = vistaGestioneProfilo.getProfiloAggiornato();
+            String errori = convalida(profiloUtenteTemporaneo);
             if (!errori.trim().isEmpty()) {
                 log.debug("ERRORE: {}", errori);
-                Applicazione.getInstance().getFrame().mostraMessaggioErrori(errori);
+                frame.mostraMessaggioErrori(errori);
                 return;
             }
             this.creaMappaAzioniViste();
-            ProfiloUtente profiloUtenteTemporaneo = vistaGestioneProfilo.getProfiloAggiornato();
-            Applicazione.getInstance().getModello().putBean(Costanti.PROFILO_UTENTE_TEMPORANEO, profiloUtenteTemporaneo);
-            Applicazione.getInstance().getControlloPrincipale().getAzioneAvvia().actionPerformed(null);
-            Applicazione.getInstance().getVistaCalibrazione().visualizza();
+            modello.putBean(Costanti.PROFILO_UTENTE_TEMPORANEO, profiloUtenteTemporaneo);
+            deviceBridgeFacade.applicaProfiloUtente(profiloUtenteTemporaneo);
+            controlloPrincipale.getAzioneAvvia().actionPerformed(null);
+            vistaGestioneProfilo.setVisible(false);
+            vistaCalibrazione.visualizza();
         }
 
         private void creaMappaAzioniViste() {
             Map<ETipologiaAzionePersonalizzata, JPanel> mappaAzoniViste = new HashMap<>();
-            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.CLICK, Applicazione.getInstance().getVistaCalibrazioneClick());
-            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.SCROLL, Applicazione.getInstance().getVistaCalibrazioneScroll());
-            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.TRASCINAMENTO, Applicazione.getInstance().getVistaCalibrazioneTrascinamento());
-            Applicazione.getInstance().getModello().putBean(Costanti.MAPPA_AZIONI_VISTE, mappaAzoniViste);
+            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.CLICK, vistaCalibrazioneClick);
+            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.DOPPIO_CLICK, vistaCalibrazioneDoppioClick);
+            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.SCROLL, vistaCalibrazioneScroll);
+            mappaAzoniViste.put(ETipologiaAzionePersonalizzata.TRASCINAMENTO, vistaCalibrazioneTrascinamento);
+            modello.putBean(Costanti.MAPPA_AZIONI_VISTE, mappaAzoniViste);
+        }
+
+    }
+
+    private class AzioneEliminaProfiloUtente extends AbstractAction {
+
+        public AzioneEliminaProfiloUtente() {
+            this.putValue(Action.NAME, "Elimina profilo");
+            this.putValue(Action.SHORT_DESCRIPTION, "Elimina profilo utente selezionato");
+            this.putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("ctrl E"));
+            this.putValue(MNEMONIC_KEY, KeyEvent.VK_E);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
+            ProfiloUtente profiloUtente = (ProfiloUtente) modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+            try {
+                archivioProfiliUtente.rimuoviProfiloUtente(profiloUtente);
+                daoArchivioProfiliUtente.salvaArchivioProfiliUtente(archivioProfiliUtente);
+                modello.putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, archivioProfiliUtente.getProfiloUtentePerIndice(0));
+                vistaPrincipale.inizializzaComboProfili();
+                if (archivioProfiliUtente.size() == 0) {
+                    controlloMenu.getAzioneGestioneProfilo().setEnabled(false);
+                     controlloPrincipale.getAzioneAggiornaProfiloSelezionato().setEnabled(false);
+                }
+                vistaGestioneProfilo.dispose();
+            } catch (DAOException ex) {
+                archivioProfiliUtente.aggiungiProfiloUtente(profiloUtente);
+                log.error("ERRORE: Impossibile eliminare il profilo utente selezionato!");
+                frame.mostraMessaggioErrori("Impossibile eliminare il profilo utente selezionato!");
+            }
         }
 
     }
@@ -96,28 +182,26 @@ public class ControlloGestioneProfilo {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                VistaGestioneProfilo vistaGestioneProfilo = Applicazione.getInstance().getVistaGestioneProfilo();
-                String nomeProfiloUtente = vistaGestioneProfilo.getTextCampoNomeProfilo();
-                ETipologiaAzionePersonalizzata itemComboSegnaleBreve = vistaGestioneProfilo.getSelectedItemComboSegnaleBreve();
-                ETipologiaAzionePersonalizzata itemComboSegnaleMedio = vistaGestioneProfilo.getSelectedItemComboSegnaleMedio();
-                ETipologiaAzionePersonalizzata itemComboSegnaleLungo = vistaGestioneProfilo.getSelectedItemComboSegnaleLungo();
-                String errori = convalida(nomeProfiloUtente, itemComboSegnaleBreve, itemComboSegnaleMedio, itemComboSegnaleLungo);
+                ProfiloUtente profiloUtenteAggiornato = vistaGestioneProfilo.getProfiloAggiornato();
+                String errori = convalida(profiloUtenteAggiornato);
+                ProfiloUtente profiloUtente = (ProfiloUtente) modello.getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+                if (!profiloUtente.equals(profiloUtenteAggiornato) && verificaProfiloDuplicato(profiloUtente)) {
+                    errori += "\nIl nome scelto è già utilizzato per un altro profilo utente!";
+                }
                 if (!errori.trim().isEmpty()) {
                     log.debug("ERRORE: {}", errori);
-                    Applicazione.getInstance().getFrame().mostraMessaggioErrori(errori);
+                    frame.mostraMessaggioErrori(errori);
                     return;
                 }
-                ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
-                ProfiloUtente profiloUtente = (ProfiloUtente) Applicazione.getInstance().getModello().getBean(Costanti.PROFILO_UTENTE_SELEZIONATO);
+                ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
                 archivioProfiliUtente.rimuoviProfiloUtente(profiloUtente);
-                ProfiloUtente profiloUtenteAggiornato = vistaGestioneProfilo.getProfiloAggiornato();
                 archivioProfiliUtente.aggiungiProfiloUtente(profiloUtenteAggiornato);
-                Applicazione.getInstance().getModello().putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, profiloUtenteAggiornato);
-                Applicazione.getInstance().getDeviceBridge().applicaProfiloUtente(profiloUtenteAggiornato);
-                Applicazione.getInstance().getDaoArchivioProfiliUtente().salvaArchivioProfiliUtente(archivioProfiliUtente);
-                Applicazione.getInstance().getVistaPrincipale().inizializzaComboProfili();
+                modello.putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, profiloUtenteAggiornato);
+                deviceBridgeFacade.applicaProfiloUtente(profiloUtenteAggiornato);
+                daoArchivioProfiliUtente.salvaArchivioProfiliUtente(archivioProfiliUtente);
+                vistaPrincipale.inizializzaComboProfili();
                 vistaGestioneProfilo.dispose();
-                Applicazione.getInstance().getFrame().mostraMessaggio("Modifiche profilo salvate correttamente!");
+                frame.mostraMessaggio("Modifiche profilo salvate correttamente!");
                 log.debug("Profilo utente aggiornato correttamente!");
             } catch (DAOException ex) {
                 log.debug("ERRORE: Impossibile salvare profilo utente!");
@@ -138,28 +222,26 @@ public class ControlloGestioneProfilo {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                VistaGestioneProfilo vistaGestioneProfilo = Applicazione.getInstance().getVistaGestioneProfilo();
-                String nomeProfiloUtente = vistaGestioneProfilo.getTextCampoNomeProfilo();
-                ETipologiaAzionePersonalizzata itemComboSegnaleBreve = vistaGestioneProfilo.getSelectedItemComboSegnaleBreve();
-                ETipologiaAzionePersonalizzata itemComboSegnaleMedio = vistaGestioneProfilo.getSelectedItemComboSegnaleMedio();
-                ETipologiaAzionePersonalizzata itemComboSegnaleLungo = vistaGestioneProfilo.getSelectedItemComboSegnaleLungo();
-                String errori = convalida(nomeProfiloUtente, itemComboSegnaleBreve, itemComboSegnaleMedio, itemComboSegnaleLungo);
+                ProfiloUtente profiloUtente = vistaGestioneProfilo.getProfiloAggiornato();
+                String errori = convalida(profiloUtente);
+                if (verificaProfiloDuplicato(profiloUtente)) {
+                    errori += "\nIl nome scelto è già utilizzato per un altro profilo utente!";
+                }
                 if (!errori.trim().isEmpty()) {
                     log.debug("ERRORE: {}", errori);
-                    Applicazione.getInstance().getFrame().mostraMessaggioErrori(errori);
+                    frame.mostraMessaggioErrori(errori);
                     return;
                 }
-                ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) Applicazione.getInstance().getModello().getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
-                ProfiloUtente profiloUtente = vistaGestioneProfilo.getProfiloAggiornato();
+                ArchivioProfiliUtente archivioProfiliUtente = (ArchivioProfiliUtente) modello.getBean(Costanti.ARCHIVIO_PROFILI_UTENTE);
                 archivioProfiliUtente.aggiungiProfiloUtente(profiloUtente);
-                Applicazione.getInstance().getDaoArchivioProfiliUtente().salvaArchivioProfiliUtente(archivioProfiliUtente);
-                Applicazione.getInstance().getModello().putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, profiloUtente);
-                Applicazione.getInstance().getDeviceBridge().applicaProfiloUtente(profiloUtente);
-                Applicazione.getInstance().getVistaPrincipale().inizializzaComboProfili();
-                Applicazione.getInstance().getControlloMenu().getAzioneGestioneProfilo().setEnabled(true);
-                Applicazione.getInstance().getControlloPrincipale().getAzioneAggiornaProfiloSelezionato().setEnabled(true);
+                daoArchivioProfiliUtente.salvaArchivioProfiliUtente(archivioProfiliUtente);
+                modello.putBean(Costanti.PROFILO_UTENTE_SELEZIONATO, profiloUtente);
+                deviceBridgeFacade.applicaProfiloUtente(profiloUtente);
+                vistaPrincipale.inizializzaComboProfili();
+                controlloMenu.getAzioneGestioneProfilo().setEnabled(true);
+                controlloPrincipale.getAzioneAggiornaProfiloSelezionato().setEnabled(true);
                 vistaGestioneProfilo.dispose();
-                Applicazione.getInstance().getFrame().mostraMessaggio("Nuovo profilo salvato correttamente!");
+                frame.mostraMessaggio("Nuovo profilo salvato correttamente!");
                 log.debug("Nuovo profilo utente salvato correttamente!");
             } catch (DAOException ex) {
                 log.debug("ERRORE: Impossibile salvare profilo utente!");

@@ -1,10 +1,11 @@
 package it.unibas.inputdevicebridge.modello.interprete;
 
-import it.unibas.inputdevicebridge.Applicazione;
+import io.quarkus.arc.Arc;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoSistema;
 import it.unibas.inputdevicebridge.modello.Costanti;
+import it.unibas.inputdevicebridge.modello.Modello;
 import it.unibas.inputdevicebridge.modello.Punto;
 import it.unibas.inputdevicebridge.modello.segnale.ISegnale;
 import static java.lang.Math.abs;
@@ -35,14 +36,15 @@ public class CalibrazioneState implements IInterpreteState {
             }
             this.ultimoPunto = segnale.getPunto();
         }
-        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO);
+        long durataAttuale = segnale.getTimeStamp() - this.timeStampInizioAcquisizione;
+        return new EsitoInterpretazione(null, ETipologiaEventoSistema.NESSUN_EVENTO, durataAttuale);
     }
 
     private EsitoInterpretazione esitoInterpretazione(ISegnale segnale) {
+        Modello modello = Arc.container().instance(Modello.class).get();
+        Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> entryEventoAzioneCalibrazione = (Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata>) modello.getBean(Costanti.ENTRY_EVENTO_AZIONE_CALIBRAZIONE);
         long durataSegnale = segnale.getTimeStamp() - this.timeStampInizioAcquisizione;
-        Applicazione.getInstance().getModello().putBean(Costanti.DURATA_SEGNALE_ACQUISITO, durataSegnale);
-        Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata> entryEventoAzioneCalibrazione = (Map.Entry<ETipologiaEventoPersonalizzato, ETipologiaAzionePersonalizzata>) Applicazione.getInstance().getModello().getBean(Costanti.ENTRY_EVENTO_AZIONE_CALIBRAZIONE);
-        return new EsitoInterpretazione(new AttesaState(), entryEventoAzioneCalibrazione != null ? entryEventoAzioneCalibrazione.getKey() : ETipologiaEventoSistema.NESSUN_EVENTO);
+        return new EsitoInterpretazione(new AttesaState(), entryEventoAzioneCalibrazione != null ? entryEventoAzioneCalibrazione.getKey() : ETipologiaEventoSistema.NESSUN_EVENTO, this.ultimoPunto, durataSegnale);
     }
 
     @Override

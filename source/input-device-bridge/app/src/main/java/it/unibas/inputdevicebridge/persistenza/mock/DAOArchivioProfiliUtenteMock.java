@@ -1,5 +1,6 @@
 package it.unibas.inputdevicebridge.persistenza.mock;
 
+import io.quarkus.arc.properties.IfBuildProperty;
 import it.unibas.inputdevicebridge.enums.ETipologiaAzionePersonalizzata;
 import it.unibas.inputdevicebridge.enums.ETipologiaEventoPersonalizzato;
 import it.unibas.inputdevicebridge.modello.Costanti;
@@ -7,15 +8,18 @@ import it.unibas.inputdevicebridge.modello.profilo_utente.ArchivioProfiliUtente;
 import it.unibas.inputdevicebridge.modello.profilo_utente.ProfiloUtente;
 import it.unibas.inputdevicebridge.persistenza.DAOException;
 import it.unibas.inputdevicebridge.persistenza.IDAOArchivioProfiliUtente;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ApplicationScoped
+@IfBuildProperty(name = "dao", stringValue = "mock")
 public class DAOArchivioProfiliUtenteMock implements IDAOArchivioProfiliUtente {
 
     @Override
-    public ArchivioProfiliUtente caricaArchivioProfiliUtente(String nome) throws DAOException {
+    public ArchivioProfiliUtente caricaArchivioProfiliUtente() throws DAOException {
         Map<ETipologiaEventoPersonalizzato, Long> mappaDurataSegnale = new HashMap<>();
         mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_BREVE, Costanti.DURATA_2_SECONDI);
         mappaDurataSegnale.put(ETipologiaEventoPersonalizzato.SEGNALE_MEDIO, 6 * Costanti.DURATA_1_SECONDO);

@@ -1,0 +1,60 @@
+INPUT-DEVICE-BRIDGE — GUIDA ALLA LETTURA DEL CODICE
+
+
+STRUTTURA
+
+    it.unibas.inputdevicebridge
+    |
+    |-- modello/
+    |-- vista/
+    |-- controllo/
+    |-- persistenza/
+    |-- enums/
+    |-- Applicazione.java -> punto di ingresso (main + bootstrap Quarkus)
+
+
+ORDINE DI LETTURA CONSIGLIATO
+
+  [1] Applicazione.java
+        Il main avvia Quarkus, gli @Inject costruiscono gli
+        oggetti, con inizializza() vengono inizializzati i componenti necessari in particolare inizializzaArchivio() che
+        carica i profili salvati.
+
+  [2] modello/DeviceBridgeFacade.java 
+        Il metodo esegui() contiene il ciclo principale dell'applicazione, che esegue la seguente pipeline:
+          segnale grezzo -> filtri -> interprete -> azione -> notifica vista.
+
+  [3] modello/segnale/  (Dato che scorre nella pipeline)
+  [4] modello/input_device/  (Dispositivi dai quali nasce il segnale)
+  [5] modello/parser/  (Processori del testo dei file di log -> segnale)
+  [6] modello/processore_segnale/  (Pulizia del segnale)
+  [7] modello/interprete/  (Segnale pulito viene interpretato)
+  [8] modello/azione/  (Segnale interpretato diventa un'azione)
+  [9] modello/profilo_utente/ (Gestione dei profili utente)
+  [10] persistenza/  (Operazioni CRUD profili utente e gestione dei file di log)
+  [11] controllo/ e vista/
+
+
+DESCRIZIONE FLUSSO COMPLETO
+
+Un dispositivo (input_device) produce una riga di log che il parser trasforma
+in un segnale (ISegnale); il Facade lo fa pulire dalla catena di filtri
+(processore_segnale), lo passa all'interprete (macchina a stati) che riconosce
+un evento; il GestoreAzione mappa quell'evento al comando giusto, che
+tramite IniettoreAzione vengono iniettati nel sistema oerativo; infine il Facade
+notifica gli observer e la vista si aggiorna. Tutto è parametrizzato dal
+ProfiloUtente (profilo_utente), salvato su file dallo strato di persistenza.
+
+
+
+RIEPILOGO PATTERN
+
+  Facade .................. modello/DeviceBridgeFacade
+  Strategy ................ modello/input_device , modello/parser
+  Chain of Responsibility . modello/processore_segnale
+  State ................... modello/interprete
+  Command ................. modello/azione
+  Null Object ............. modello/azione/NullObjectCommand
+  Singleton ............... modello/azione/IniettoreAzione
+  Observer ................ modello/IDeviceObserver , modello/interprete/IInterpreteObserver
+  DAO ..................... persistenza/
