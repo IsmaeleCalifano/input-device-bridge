@@ -37,6 +37,7 @@ public class DeviceBridgeFacade {
     private final Lock lock;
     private final Condition dispositivoDisponibile;
     private final List<IDeviceObserver> deviceObserver = new ArrayList<>();
+    private long ultimaNotificaLatenza = 0;
 
     public DeviceBridgeFacade() {
         this.processoreSegnale = new ProcessoreSegnaleResponsability();
@@ -127,13 +128,17 @@ public class DeviceBridgeFacade {
                 this.notificaStatoApplicativo(statoSuccessivo.toString());
             }
             float latenza = (System.nanoTime() - segnale.getTimeStamp()) / Costanti.DURATA_1_MILLISECONDO;
-            this.notificaLatenza(latenza);
+            long TimeStampCorrente = System.nanoTime();
+            if (TimeStampCorrente - this.ultimaNotificaLatenza >= Costanti.INTERVALLO_NOTIFICA_LATENZA) {
+                this.notificaLatenza(latenza);
+                this.ultimaNotificaLatenza = TimeStampCorrente;
+            }
             log.debug("Latenza: {} ms\n", String.format("%.3f", latenza));
-            
+
             // /*
             try {
                 // Utilizzato per rallentare il loop in modo da poter testare meglio
-                Thread.sleep(50);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 this.inEsecuzione = false;
                 Thread.currentThread().interrupt();
@@ -156,7 +161,7 @@ public class DeviceBridgeFacade {
             Thread.currentThread().interrupt();
             log.error(ex.toString());
         } finally {
-           this.lock.unlock();
+            this.lock.unlock();
         }
     }
 

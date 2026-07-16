@@ -25,8 +25,11 @@ public class Costanti {
     public static final float PASSO_GRIGLIA = 0.01f;
     public static final String PUNTO_MOVIMENTO = "PUNTO_MOVIMENTO";
 
-    // ---------- MOVIMENTO ---------- 
+    // ---------- CALIBRAZIONE ---------- 
     public static final int NUMERO_TENTATIVI_CALIBRAZIONE = 3;
+    
+    // ---------- NOTIFICHE OBSERVER ----------
+    public static final long INTERVALLO_NOTIFICA_LATENZA = 250_000_000L; 
 
     // ---------- MODELLO ---------- 
     public static final String ARCHIVIO_PROFILI_UTENTE = "ARCHIVIO_PROFILI_UTENTE";
